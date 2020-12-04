@@ -21,5 +21,9 @@ postcode_state_weight_column = 'proportion_in_district'
 input_data = pd.read_csv(input_file)
 weight_data = pd.read_csv(postcode_state_weight_file)
 
-print(input_data.head(10))
-print(weight_data.head(10))
+# print(input_data.head(10))
+# print(weight_data.head(10))
+
+middle_data = pd.merge(weight_data, input_data, how='left', left_on=postcode_state_join_column, right_on=input_join_column)
+
+print(middle_data.head(15))
