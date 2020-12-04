@@ -5,6 +5,8 @@ import pandas as pd
 input_file = 'test-data/2016Census_G01_AUS_POA.csv'
 input_mode = 'postcode'
 input_join_column = 'POA_CODE_2016'
+input_numerator_column = 'Counted_Census_Night_home_P'
+input_denominator_column = 'Tot_P_P'
 
 # mode decider
 output_mode = 'state'
@@ -24,6 +26,15 @@ weight_data = pd.read_csv(postcode_state_weight_file)
 # print(input_data.head(10))
 # print(weight_data.head(10))
 
+# left join the data
 middle_data = pd.merge(weight_data, input_data, how='left', left_on=postcode_state_join_column, right_on=input_join_column)
+print(middle_data.head(15))
+
+# make weight column
+middle_data['weight'] = middle_data[input_numerator_column] * middle_data[postcode_state_weight_column]
+middle_data['total'] = middle_data[input_denominator_column]
 
 print(middle_data.head(15))
+
+# group by
+# output_data = middle_data[[postcode_state_name_column, postcode_state_join_column, weight]]
