@@ -28,13 +28,20 @@ weight_data = pd.read_csv(postcode_state_weight_file)
 
 # left join the data
 middle_data = pd.merge(weight_data, input_data, how='left', left_on=postcode_state_join_column, right_on=input_join_column)
-print(middle_data.head(15))
+# print(middle_data.head(15))
 
 # make weight column
-middle_data['weight'] = middle_data[input_numerator_column] * middle_data[postcode_state_weight_column]
-middle_data['total'] = middle_data[input_denominator_column]
+middle_data[input_numerator_column] = middle_data[input_numerator_column] * middle_data[postcode_state_weight_column]
+middle_data[input_denominator_column] = middle_data[input_denominator_column]
 
-print(middle_data.head(15))
+# print(middle_data.head(15))
 
 # group by
-# output_data = middle_data[[postcode_state_name_column, postcode_state_join_column, weight]]
+output_data = middle_data[[postcode_state_name_column, postcode_state_join_column, input_numerator_column, input_denominator_column]]
+# print(output_data.head(10))
+
+# group by, add up, reset index to get a data frame, limit to sensible columns, export
+output = output_data.groupby([postcode_state_name_column]).sum()
+output = output.reset_index()
+output = output[[postcode_state_name_column, input_numerator_column]]
+output.to_csv('output.csv',index=False)
