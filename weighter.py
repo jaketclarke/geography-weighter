@@ -1,47 +1,68 @@
 # imports
 import pandas as pd
+import os
 
-# input variables
-input_file = 'test-data/2016Census_G01_AUS_POA.csv'
-input_mode = 'postcode'
-input_join_column = 'POA_CODE_2016'
-input_numerator_column = 'Counted_Census_Night_home_P'
-input_denominator_column = 'Tot_P_P'
+class Weight:
+    
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+    
+    def __init__(self):
+        # input variables
+        self.input_file = 'test-data/2016Census_G01_AUS_POA.csv'
+        self.input_mode = 'postcode'
+        self.input_join_column = 'POA_CODE_2016'
+        self.input_numerator_column = 'Counted_Census_Night_home_P'
+        self.input_denominator_column = 'Tot_P_P'
 
-# mode decider
-output_mode = 'state'
+        # mode decider
+        self.output_mode = 'state'
 
-# postcode state mode config
-# ship off to config file?
-postcode_state_weight_file = 'test-data/poa_2016_sed_2013_concordance_vic_nonflat.csv'
-postcode_state_join_column = 'POA_CODE_2016'
-postcode_state_name_column = 'district'
-postcode_state_weight_column = 'proportion_in_district'
+        # postcode state mode config
+        # ship off to config file?
+        self.postcode_state_weight_file = 'test-data/poa_2016_sed_2013_concordance_vic_nonflat.csv'
+        self.postcode_state_join_column = 'POA_CODE_2016'
+        self.postcode_state_name_column = 'district'
+        self.postcode_state_weight_column = 'proportion_in_district'
 
-# hello world - load the input and output files and dump to console
+        # placeholder vars
+        self.input_data = None
+        self.weight_data = None
+        self.process_data = None
+        self.output_data = None
+        
+        # settings
+        self.output_dir = 'output'
+        self.output_file = 'file.csv'
+        self.output_filepath = self.output_dir + os.sep + self.output_file
+        
+    def get_input_data(self):
+        self.input_data = pd.read_csv(self.input_file)
+    
+    def get_weight_data(self):
+        self.weight_data = pd.read_csv(self.postcode_state_weight_file)
 
-input_data = pd.read_csv(input_file)
-weight_data = pd.read_csv(postcode_state_weight_file)
+    def run_merge_data(self):
+        self.process_data = pd.merge(self.weight_data, self.input_data, how='left', left_on=self.postcode_state_join_column, right_on=self.input_join_column)
 
-# print(input_data.head(10))
-# print(weight_data.head(10))
+    def run_process_data(self):
+        self.process_data[self.input_numerator_column] = self.process_data[self.input_numerator_column] * self.process_data[self.postcode_state_weight_column]
+        self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
 
-# left join the data
-middle_data = pd.merge(weight_data, input_data, how='left', left_on=postcode_state_join_column, right_on=input_join_column)
-# print(middle_data.head(15))
+    def run_cull_data(self):
+        # group by, add up, reset index to get a data frame, limit to sensible columns, export
+        self.output_data = self.process_data[[self.postcode_state_name_column, self.postcode_state_join_column, self.input_numerator_column, self.input_denominator_column]]
+        self.output_data = self.output_data.groupby([self.postcode_state_name_column]).sum()
+        self.output_data = self.output_data.reset_index()
+        self.output_data = self.output_data[[self.postcode_state_name_column, self.input_numerator_column]]
 
-# make weight column
-middle_data[input_numerator_column] = middle_data[input_numerator_column] * middle_data[postcode_state_weight_column]
-middle_data[input_denominator_column] = middle_data[input_denominator_column]
+    def export_output_data(self):
+        self.output_data.to_csv(self.output_filepath,index=False)
 
-# print(middle_data.head(15))
-
-# group by
-output_data = middle_data[[postcode_state_name_column, postcode_state_join_column, input_numerator_column, input_denominator_column]]
-# print(output_data.head(10))
-
-# group by, add up, reset index to get a data frame, limit to sensible columns, export
-output = output_data.groupby([postcode_state_name_column]).sum()
-output = output.reset_index()
-output = output[[postcode_state_name_column, input_numerator_column]]
-output.to_csv('output.csv',index=False)
+w = Weight()
+w.get_input_data()
+w.get_weight_data()
+w.run_merge_data()
+w.run_process_data()
+w.run_cull_data()
+w.export_output_data()
