@@ -65,6 +65,7 @@ def main():
             'type': 'input',
             'name': 'input_file',
             'message': 'Please enter the file path to your input file',
+            'validate': FilePathValidator
         }
     ]
     answers = prompt(questions)
