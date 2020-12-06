@@ -6,7 +6,7 @@ import os
 # tests for strip_parent_directory
 def test_weight_run():
     # create weight class
-    w = Weight()
+    w = Weight(input_mode='postcode')
     # load data
     w.get_input_data()
     w.get_weight_data()

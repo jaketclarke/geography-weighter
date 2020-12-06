@@ -43,8 +43,26 @@ def main():
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 
-    # initialise a weight object
-    w = Weight()
+    ## Work out what kind of geography we are dealing with
+    qtype = [
+        {
+            'type': 'list',
+            'name': 'input_mode',
+            'message': 'What is the geography of your input file?',
+            'choices': ['postcode','sa2','sa3','suburb'],
+            'validate': EmptyValidator
+        }
+    ]
+
+    atype = prompt(qtype)
+
+    print(atype)
+    print(atype['input_mode'])
+
+    # initialise a weight object with the geog type specified
+    w = Weight(input_mode=atype['input_mode'])
+
+    print(w)
 
     questions = [
         {
@@ -52,12 +70,6 @@ def main():
             'name': 'input_file',
             'message': 'Please enter the file path to your input file',
             'validate': FilePathValidator
-        },{
-            'type': 'list',
-            'name': 'input_mode',
-            'message': 'What is the geography of your input file?',
-            'choices': ['postcode','sa2','sa3','suburb'],
-            'validate': EmptyValidator
         },{
             'type': 'input',
             'name': 'input_join_column',
@@ -84,8 +96,6 @@ def main():
 
     # implement postcode class
     if w.input_mode == 'postcode':
-        # ensure output dir exists
-        make_directorytree_if_not_exists(w.output_dir)
         # load data
         w.get_input_data()
         w.get_weight_data()
@@ -95,6 +105,7 @@ def main():
         w.run_cull_data()
         # export
         w.export_output_data()
+        print(w)
     else:
         log(f"Unfortunately weighting by {w.input_mode} is not implemented yet", color="red")
 if __name__ == '__main__':

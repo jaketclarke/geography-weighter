@@ -7,10 +7,10 @@ class Weight:
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
     
-    def __init__(self):
+    def __init__(self, input_mode):
         # input variables
         self.input_file = 'test-data/2016Census_G01_AUS_POA.csv'
-        self.input_mode = 'postcode'
+        self.input_mode = input_mode
         self.input_join_column = 'POA_CODE_2016'
         self.input_numerator_column = 'Counted_Census_Night_home_P'
         self.input_denominator_column = 'Tot_P_P'
@@ -63,3 +63,8 @@ class Weight:
 
     def export_output_data(self):
         self.output_data.to_csv(self.output_filepath,index=False)
+
+class Postcode(Weight):
+    def __init__(self):
+        self.output_mode = 'provingapoint'
+        Weight.__init__(self)
