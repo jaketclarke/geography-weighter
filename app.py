@@ -7,7 +7,8 @@ from weighter import *
 from pyfiglet import Figlet
 from clint.arguments import Args
 from clint.textui import puts, indent, colored
-# from termcolor import colored
+import click
+from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
 
 # pretty intro text
 f = Figlet(font='big')
@@ -15,6 +16,15 @@ f = Figlet(font='big')
 
 print(colored.green(f.renderText('Geographic Weighter')))
 
+style = style_from_dict({
+    Token.QuestionMark: '#fac731 bold',
+    Token.Answer: '#4688f1 bold',
+    Token.Instruction: '',  # default
+    Token.Separator: '#cc5454',
+    Token.Selected: '#0abf5b',  # default
+    Token.Pointer: '#673ab7 bold',
+    Token.Question: '',
+})
 
 args = Args()
 
@@ -26,6 +36,44 @@ with indent(4, quote='>>>'):
     puts(colored.blue('Grouped Arguments: ') + str(dict(args.grouped)))
 
 print()
+
+class FilePathValidator(Validator):
+    def validate(self, value):
+        if len(value.text):
+            if os.path.isfile(value.text):
+                return True
+            else:
+                raise ValidationError(
+                    message="File not found",
+                    cursor_position=len(value.text))
+        else:
+            raise ValidationError(
+                message="You can't leave this blank",
+                cursor_position=len(value.text))
+
+config = {}
+
+@click.command()
+def main():
+    """
+    Simple CLI for sending emails using SendGrid
+    """
+    log("Geographic Weighter", color="green", figlet=True)
+    log("Welcome to the Geographic Weighter", "blue")
+    
+    questions = [
+        {
+            'type': 'input',
+            'name': 'first_name',
+            'message': 'What\'s your first name',
+        }
+    ]
+    answers = prompt(questions)
+    print(answers)
+
+if __name__ == '__main__':
+    main()
+
 
 # # set up console interface
 # # parser = argparse.ArgumentParser(description='Weighter\r\nSome sensible description can go here')

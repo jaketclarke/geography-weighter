@@ -8,6 +8,9 @@ pytest = "*"
 pandas = "*"
 pyfiglet = "*"
 clint = "*"
+click = "*"
+termcolor = "*"
+pyinquirer = "*"
 
 [dev-packages]
 
