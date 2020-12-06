@@ -9,34 +9,6 @@ from clint.arguments import Args
 from clint.textui import puts, indent, colored
 import click
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
-
-# pretty intro text
-f = Figlet(font='big')
-# print(colored(f.renderText('Geographic Weighter'),'green'))
-
-print(colored.green(f.renderText('Geographic Weighter')))
-
-style = style_from_dict({
-    Token.QuestionMark: '#fac731 bold',
-    Token.Answer: '#4688f1 bold',
-    Token.Instruction: '',  # default
-    Token.Separator: '#cc5454',
-    Token.Selected: '#0abf5b',  # default
-    Token.Pointer: '#673ab7 bold',
-    Token.Question: '',
-})
-
-args = Args()
-
-with indent(4, quote='>>>'):
-    puts(colored.blue('Aruments passed in: ') + str(args.all))
-    puts(colored.green('Flags detected: ') + str(args.flags))
-    puts(colored.blue('Files detected: ') + str(args.files))
-    puts(colored.red('NOT Files detected: ') + str(args.not_files))
-    puts(colored.blue('Grouped Arguments: ') + str(dict(args.grouped)))
-
-print()
-
 class EmptyValidator(Validator):
     def validate(self, value):
         if len(value.text):
@@ -66,7 +38,10 @@ def main():
     Simple CLI for sending emails using SendGrid
     """
     log("Geographic Weighter", color="green", figlet=True)
-    log("Welcome to the Geographic Weighter", "blue")
+    log("Welcome to the Geographic Weighter", "green")
+    log("This tool will take an input file with properties for a geography, such as census data by postcode, and output it by a different geography, for example federal electorates", "green")
+    log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
+    log("To get started, enter the path to your file below", "green")
     w = Weight()
 
     questions = [
@@ -76,9 +51,25 @@ def main():
             'message': 'Please enter the file path to your input file',
             'validate': FilePathValidator
         },{
-            'type': 'input',
+            'type': 'list',
             'name': 'input_mode',
-            'message': 'What mode do you want to run?',
+            'message': 'What is the geography of your input file?',
+            'choices': ['postcode','sa2','sa3','suburb'],
+            'validate': EmptyValidator
+        },{
+            'type': 'input',
+            'name': 'input_join_column',
+            'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
+            'validate': EmptyValidator
+        },{
+            'type': 'input',
+            'name': 'input_numerator_column',
+            'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
+            'validate': EmptyValidator
+        },{
+            'type': 'input',
+            'name': 'input_denominator_column',
+            'message': 'What is your total column (denominator, e.g Tot_P_P)',
             'validate': EmptyValidator
         }
     ]
