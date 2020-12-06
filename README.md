@@ -22,6 +22,10 @@ Nearly everything.
 - run the app with `pipenv run python app.py --help`
 - to add `{"foo":"bar"}` to input json, run with `pipenv run python app.py --key foo --value bar`
 
+### Run tests
+
+- `pipenv run pytest -v tests.py`
+
 ## Ackowledgements
 
 Fake data courtesy: <https://jsonplaceholder.typicode.com/>
