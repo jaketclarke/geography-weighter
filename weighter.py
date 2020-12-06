@@ -35,7 +35,12 @@ class Weight:
         self.output_dir = 'output'
         self.output_file = 'file.csv'
         self.output_filepath = self.output_dir + os.sep + self.output_file
-        
+    
+    # update several properties of the class with vals (eg from cmd line tool)
+    def update_properties(self, data):
+        for name, value in data.items():
+            setattr(self, name, value)
+
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)
     

@@ -37,6 +37,15 @@ with indent(4, quote='>>>'):
 
 print()
 
+class EmptyValidator(Validator):
+    def validate(self, value):
+        if len(value.text):
+            return True
+        else:
+            raise ValidationError(
+                message="You can't leave this blank",
+                cursor_position=len(value.text))
+
 class FilePathValidator(Validator):
     def validate(self, value):
         if len(value.text):
@@ -66,13 +75,19 @@ def main():
             'name': 'input_file',
             'message': 'Please enter the file path to your input file',
             'validate': FilePathValidator
+        },{
+            'type': 'input',
+            'name': 'input_mode',
+            'message': 'What mode do you want to run?',
+            'validate': EmptyValidator
         }
     ]
     answers = prompt(questions)
     print(answers)
 
     # overwrite input file
-    w.input_file = answers['input_file']
+    # w.input_file = answers['input_file']
+    w.update_properties(answers)
 
     # ensure output dir exists
     make_directorytree_if_not_exists(w.output_dir)
@@ -85,6 +100,8 @@ def main():
     w.run_cull_data()
     # export
     w.export_output_data()
+
+    print(w)
 
 if __name__ == '__main__':
     main()
