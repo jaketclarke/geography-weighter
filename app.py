@@ -9,6 +9,8 @@ from clint.arguments import Args
 from clint.textui import puts, indent, colored
 import click
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
+
+
 class EmptyValidator(Validator):
     def validate(self, value):
         if len(value.text):
@@ -17,6 +19,7 @@ class EmptyValidator(Validator):
             raise ValidationError(
                 message="You can't leave this blank",
                 cursor_position=len(value.text))
+
 
 class FilePathValidator(Validator):
     def validate(self, value):
@@ -32,6 +35,7 @@ class FilePathValidator(Validator):
                 message="You can't leave this blank",
                 cursor_position=len(value.text))
 
+
 @click.command()
 def main():
     """
@@ -43,44 +47,48 @@ def main():
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 
-    ## Work out what kind of geography we are dealing with
+    # Work out what kind of geography we are dealing with
     qtype = [
         {
             'type': 'list',
             'name': 'input_mode',
             'message': 'What is the geography of your input file?',
-            'choices': ['postcode','sa2','sa3','suburb'],
+            'choices': ['postcode', 'sa2', 'sa3', 'suburb'],
+            'validate': EmptyValidator
+        },
+        {
+            'type': 'list',
+            'name': 'output_mode',
+            'message': 'What geography do you want to output?',
+            'choices': ['state electorates', 'federal electorates'],
             'validate': EmptyValidator
         }
     ]
 
     atype = prompt(qtype)
 
-    print(atype)
-    print(atype['input_mode'])
-
     # initialise a weight object with the geog type specified
-    w = Weight(input_mode=atype['input_mode'])
+    w = Weight(input_mode=atype['input_mode'],
+               output_mode=atype['output_mode'])
 
-    print(w)
-
+    # ask questions to do the weighting
     questions = [
         {
             'type': 'input',
             'name': 'input_file',
             'message': 'Please enter the file path to your input file',
             'validate': FilePathValidator
-        },{
+        }, {
             'type': 'input',
             'name': 'input_join_column',
             'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
             'validate': EmptyValidator
-        },{
+        }, {
             'type': 'input',
             'name': 'input_numerator_column',
             'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
             'validate': EmptyValidator
-        },{
+        }, {
             'type': 'input',
             'name': 'input_denominator_column',
             'message': 'What is your total column (denominator, e.g Tot_P_P)',
@@ -94,8 +102,9 @@ def main():
     # update weight class with data entered
     w.update_properties(answers)
 
-    # implement postcode class
-    if w.input_mode == 'postcode':
+    # implement postcode / state electorate
+    # replace below with a call to the class
+    if w.input_mode == 'postcode' and w.output_mode == 'state electorates':
         # load data
         w.get_input_data()
         w.get_weight_data()
@@ -105,8 +114,9 @@ def main():
         w.run_cull_data()
         # export
         w.export_output_data()
-        print(w)
     else:
-        log(f"Unfortunately weighting by {w.input_mode} is not implemented yet", color="red")
+        log(f"Unfortunately weighting {w.input_mode} by {w.output_mode} is not implemented yet", color="red")
+
+
 if __name__ == '__main__':
     main()

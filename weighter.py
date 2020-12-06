@@ -1,70 +1,98 @@
 # imports
 import pandas as pd
 import os
+from functions import log
+
 
 class Weight:
-    
+
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
-    
-    def __init__(self, input_mode):
-        # input variables
-        self.input_file = 'test-data/2016Census_G01_AUS_POA.csv'
+
+    def __init__(self, input_mode, output_mode):
+        # mode decider
         self.input_mode = input_mode
+        self.output_mode = output_mode
+
+        # properties for input file
+        # filepath
+        self.input_file = 'test-data/2016Census_G01_AUS_POA.csv'
+        # column to join to weight on
         self.input_join_column = 'POA_CODE_2016'
+        # column to calc % from (numerator)
         self.input_numerator_column = 'Counted_Census_Night_home_P'
+        # column to calc % from (denominator)
         self.input_denominator_column = 'Tot_P_P'
 
-        # mode decider
-        self.output_mode = 'state'
-
-        # postcode state mode config
-        # ship off to config file?
-        self.postcode_state_weight_file = 'test-data/poa_2016_sed_2013_concordance_vic_nonflat.csv'
-        self.postcode_state_join_column = 'POA_CODE_2016'
-        self.postcode_state_name_column = 'district'
-        self.postcode_state_weight_column = 'proportion_in_district'
+        # properties for weight file
+        # filepath
+        self.weight_file = None
+        # column to join to input on
+        self.weight_join_column = None
+        # column with pretty name for output
+        self.weight_name_column = None
+        # column with population weight value
+        self.weight_proportion_overlap_column = None
 
         # placeholder vars
-        self.input_data = None
+        self.weight_file = None
         self.weight_data = None
         self.process_data = None
         self.output_data = None
-        
+
         # settings
         self.output_dir = 'output'
         self.output_file = 'file.csv'
         self.output_filepath = self.output_dir + os.sep + self.output_file
-    
+
+        # need a neater way to do this - basically, if you are postcode-state, we want to
+        if self.input_mode == 'postcode' and self.output_mode == 'state electorates':
+            self.postcode_state()
+        else:
+            log('Sorry, this combination of input and output modes is not implemented yet!', color='red')
+
     # update several properties of the class with vals (eg from cmd line tool)
     def update_properties(self, data):
         for name, value in data.items():
             setattr(self, name, value.strip())
 
+    # if weighting postcode and state, this is the weight data you need
+    def set_weight_data_postcode_state(self):
+        self.update_properties({
+            'weight_file': 'test-data/poa_2016_sed_2013_concordance_vic_nonflat.csv',
+            'weight_join_column': 'POA_CODE_2016',
+            'weight_name_column': 'district',
+            'weight_proportion_overlap_column': 'proportion_in_district'
+        })
+
+    # if postcode_state, set those weights
+    def postcode_state(self):
+        self.set_weight_data_postcode_state()
+
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)
-    
+
     def get_weight_data(self):
-        self.weight_data = pd.read_csv(self.postcode_state_weight_file)
+        self.weight_data = pd.read_csv(self.weight_file)
 
     def run_merge_data(self):
-        self.process_data = pd.merge(self.weight_data, self.input_data, how='left', left_on=self.postcode_state_join_column, right_on=self.input_join_column)
+        self.process_data = pd.merge(self.weight_data, self.input_data, how='left',
+                                     left_on=self.weight_join_column, right_on=self.input_join_column)
 
     def run_process_data(self):
-        self.process_data[self.input_numerator_column] = self.process_data[self.input_numerator_column] * self.process_data[self.postcode_state_weight_column]
+        self.process_data[self.input_numerator_column] = self.process_data[self.input_numerator_column] * \
+            self.process_data[self.weight_proportion_overlap_column]
         self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
 
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
-        self.output_data = self.process_data[[self.postcode_state_name_column, self.postcode_state_join_column, self.input_numerator_column, self.input_denominator_column]]
-        self.output_data = self.output_data.groupby([self.postcode_state_name_column]).sum()
+        self.output_data = self.process_data[[
+            self.weight_name_column, self.weight_join_column, self.input_numerator_column, self.input_denominator_column]]
+        self.output_data = self.output_data.groupby(
+            [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
-        self.output_data = self.output_data[[self.postcode_state_name_column, self.input_numerator_column]]
+        self.output_data = self.output_data[[
+            self.weight_name_column, self.input_numerator_column]]
 
     def export_output_data(self):
-        self.output_data.to_csv(self.output_filepath,index=False)
-
-class Postcode(Weight):
-    def __init__(self):
-        self.output_mode = 'provingapoint'
-        Weight.__init__(self)
+        self.output_data.to_csv(self.output_filepath, index=False)

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "*"
 pandas = "*"
 pyfiglet = "*"
 clint = "*"
@@ -13,6 +12,9 @@ termcolor = "*"
 pyinquirer = "*"
 
 [dev-packages]
+pylint = "*"
+pytest = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"
