@@ -16,13 +16,13 @@ class Weight:
 
         # properties for input file
         # filepath
-        self.input_file = 'test-data/2016Census_G01_AUS_POA.csv'
+        self.input_file = None
         # column to join to weight on
-        self.input_join_column = 'POA_CODE_2016'
+        self.input_join_column = None
         # column to calc % from (numerator)
-        self.input_numerator_column = 'Counted_Census_Night_home_P'
+        self.input_numerator_column = None
         # column to calc % from (denominator)
-        self.input_denominator_column = 'Tot_P_P'
+        self.input_denominator_column = None
 
         # properties for weight file
         # filepath
