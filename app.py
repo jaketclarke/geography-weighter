@@ -41,7 +41,9 @@ def main():
     log("Welcome to the Geographic Weighter", "green")
     log("This tool will take an input file with properties for a geography, such as census data by postcode, and output it by a different geography, for example federal electorates", "green")
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
-    log("To get started, enter the path to your file below", "green")
+    log("To get started, enter the path to your file below:", "green")
+
+    # initialise a weight object
     w = Weight()
 
     questions = [
@@ -73,26 +75,27 @@ def main():
             'validate': EmptyValidator
         }
     ]
-    answers = prompt(questions)
-    print(answers)
 
-    # overwrite input file
-    # w.input_file = answers['input_file']
+    # ask questions
+    answers = prompt(questions)
+
+    # update weight class with data entered
     w.update_properties(answers)
 
-    # ensure output dir exists
-    make_directorytree_if_not_exists(w.output_dir)
-    # load data
-    w.get_input_data()
-    w.get_weight_data()
-    # process
-    w.run_merge_data()
-    w.run_process_data()
-    w.run_cull_data()
-    # export
-    w.export_output_data()
-
-    print(w)
-
+    # implement postcode class
+    if w.input_mode == 'postcode':
+        # ensure output dir exists
+        make_directorytree_if_not_exists(w.output_dir)
+        # load data
+        w.get_input_data()
+        w.get_weight_data()
+        # process
+        w.run_merge_data()
+        w.run_process_data()
+        w.run_cull_data()
+        # export
+        w.export_output_data()
+    else:
+        log(f"Unfortunately weighting by {w.input_mode} is not implemented yet", color="red")
 if __name__ == '__main__':
     main()
