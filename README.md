@@ -36,3 +36,5 @@ Gitignore: <https://github.com/github/gitignore/blob/master/Python.gitignore>
 
 Tests influenced by: <https://semaphoreci.com/community/tutorials/testing-python-aapplications-with-pytest>,
 <https://tryexceptpass.org/article/pytest-github-integration/>
+
+CLI influenced by: <https://codeburst.io/building-beautiful-command-line-interfaces-with-python-26c7e1bb54df>

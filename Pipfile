@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-argparse = "*"
 pytest = "*"
 pandas = "*"
+pyfiglet = "*"
 
 [dev-packages]
 
