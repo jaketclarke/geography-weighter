@@ -11,7 +11,7 @@ def test_weight_run():
     w.get_input_data()
     w.get_weight_data()
     # ensure output dir exists
-    make_directorytree_if_not_exists(w.output_filepath)
+    make_directorytree_if_not_exists(w.output_dir)
     # process
     w.run_merge_data()
     w.run_process_data()
