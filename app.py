@@ -5,10 +5,27 @@ import sys
 from functions import *
 from weighter import *
 from pyfiglet import Figlet
+from clint.arguments import Args
+from clint.textui import puts, indent, colored
+# from termcolor import colored
 
 # pretty intro text
 f = Figlet(font='big')
-print(f.renderText('Geographic Weighter'))
+# print(colored(f.renderText('Geographic Weighter'),'green'))
+
+print(colored.green(f.renderText('Geographic Weighter')))
+
+
+args = Args()
+
+with indent(4, quote='>>>'):
+    puts(colored.blue('Aruments passed in: ') + str(args.all))
+    puts(colored.green('Flags detected: ') + str(args.flags))
+    puts(colored.blue('Files detected: ') + str(args.files))
+    puts(colored.red('NOT Files detected: ') + str(args.not_files))
+    puts(colored.blue('Grouped Arguments: ') + str(dict(args.grouped)))
+
+print()
 
 # # set up console interface
 # # parser = argparse.ArgumentParser(description='Weighter\r\nSome sensible description can go here')

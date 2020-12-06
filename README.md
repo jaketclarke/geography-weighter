@@ -11,8 +11,10 @@ Nearly everything.
 ## Development Environment
 
 - pyenv for python versioning
+- setup here <https://github.com/pyenv/pyenv>
 - pipenv for virtual environment
 - setup taken from this guide <https://hackernoon.com/reaching-python-development-nirvana-bb5692adf30c>, as well as https://dev.to/py3course/setting-up-a-python-environment-in-2020-3e9e
+- I am developing in WSL on a windows machine, and am making use of this vscode extension to remotely run python <https://code.visualstudio.com/docs/remote/wsl-tutorial>
 
 ### Get started
 

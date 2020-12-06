@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "475d1fdd4d0e1f5c19d5b3ce818ac24164befa259f4bcaec073531356b4b63d9"
+            "sha256": "5ec262bb67b28e4a43ef27699079b66ad466462f6c7d74efbcf445779c832d20"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,12 @@
         ]
     },
     "default": {
+        "args": {
+            "hashes": [
+                "sha256:a785b8d837625e9b61c39108532d95b85274acd679693b71ebb5156848fcf814"
+            ],
+            "version": "==0.1.0"
+        },
         "attrs": {
             "hashes": [
                 "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6",
@@ -23,6 +29,13 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==20.3.0"
+        },
+        "clint": {
+            "hashes": [
+                "sha256:05224c32b1075563d0b16d0015faaf9da43aa214e4a2140e51f08789e7a4c5aa"
+            ],
+            "index": "pypi",
+            "version": "==0.5.1"
         },
         "iniconfig": {
             "hashes": [
