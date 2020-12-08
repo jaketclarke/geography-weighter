@@ -89,8 +89,10 @@ class Weight:
             self.process_data[self.weight_proportion_overlap_column]
 
     def run_process_data(self):
+        # add total
         self.add_total_column()
 
+        # add numeric column
         self.process_data[f'{self.input_numerator_column}_n'] = self.process_data[self.input_numerator_column] * \
             self.process_data[self.weight_proportion_overlap_column]
         self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
@@ -101,14 +103,14 @@ class Weight:
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
         self.output_data = self.process_data[[
-            self.weight_name_column, self.weight_join_column, self.input_numerator_column, f'{self.input_numerator_column}_n', self.input_denominator_column, f'{self.input_denominator_column}_total']]
+            self.weight_name_column, self.weight_join_column, f'{self.input_numerator_column}_n', f'{self.input_denominator_column}_total']]
         self.output_data = self.output_data.groupby(
             [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
-        # self.output_data[f'{self.input_numerator_column}_pc'] = self.output_data[self.input_numerator_column] / \
-        #     self.output_data[f'{self.input_denominator_column}_total']
+        self.output_data[f'{self.input_numerator_column}_pc'] = self.output_data[f'{self.input_numerator_column}_n'] / \
+            self.output_data[f'{self.input_denominator_column}_total']
         self.output_data = self.output_data[[
-            self.weight_name_column, self.input_numerator_column, self.input_denominator_column, f'{self.input_numerator_column}_n', f'{self.input_denominator_column}_total']]
+            self.weight_name_column, f'{self.input_numerator_column}_n', f'{self.input_numerator_column}_pc', f'{self.input_denominator_column}_total']]
 
     def export_output_data(self):
         self.output_data.to_csv(self.output_filepath, index=False)
