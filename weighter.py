@@ -246,3 +246,14 @@ class Weight:
     def export_output_data(self):
         self.set_output_filepath()
         self.output_data.to_csv(self.output_filepath, index=False)
+
+    def run(self):
+        # load data
+        self.get_input_data()
+        self.get_weight_data()
+        # process
+        self.run_merge_data()
+        self.run_process_data()
+        self.run_cull_data()
+        # export
+        self.export_output_data()

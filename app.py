@@ -36,15 +36,7 @@ def main():
     # implement postcode / state electorate
     # replace below with a call to the class
     try:
-        # load data
-        w.get_input_data()
-        w.get_weight_data()
-        # process
-        w.run_merge_data()
-        w.run_process_data()
-        w.run_cull_data()
-        # export
-        w.export_output_data()
+        w.run()
     except:
         log(f"Unfortunately, something went wrong", color="red")
         log(f"{w}", color='green')
