@@ -45,6 +45,14 @@ class Weight:
         self.output_file = 'file.csv'
         self.output_filepath = self.output_dir + os.sep + self.output_file
 
+        # calculated columns
+        # eventually, want to calculate multiple proportions
+        self.numerator_columns = []
+
+        # this can be the input denominator column + a modifier
+        # might need to be more complex to do multiple proportions in some future build
+        self.total_column = None
+
         # need a neater way to do this - basically, if you are postcode-state, we want to
         if self.input_mode == 'postcode' and self.output_mode == 'state electorates':
             self.postcode_state()
@@ -84,25 +92,48 @@ class Weight:
         if self.debug:
             self.process_data.to_csv('debug/merge_data.csv')
 
-    def run_process_data(self):
-        self.process_data[self.input_numerator_column] = self.process_data[self.input_numerator_column] * \
+    def add_output(self):
+        # raw number
+        col = f'{self.input_numerator_column}_n'
+
+        self.process_data[col] = self.process_data[self.input_numerator_column] * \
             self.process_data[self.weight_proportion_overlap_column]
-        self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
+
+        # add to output columns
+        self.numerator_columns.append(col)
+
+    def run_process_data(self):
+        # ensure total column is set
+        self.total_column = f'{self.input_denominator_column}_total'
+
+        # adding one column - change in future to repeat this process to add many
+        self.add_output()
+
+        # set the weighted total field
+        self.process_data[self.total_column] = self.process_data[self.input_denominator_column] * \
+            self.process_data[self.weight_proportion_overlap_column]
 
         if self.debug:
             self.process_data.to_csv('debug/process_data.csv')
 
     def run_cull_data(self):
-        # group by, add up, reset index to get a data frame, limit to sensible columns, export
-        self.output_data = self.process_data[[
-            self.weight_name_column, self.weight_join_column, self.input_numerator_column, self.input_denominator_column]]
+        # filter non-output columns
+        cols_to_keep = [self.weight_name_column,
+                        self.weight_join_column, self.total_column]
+        cols_to_keep = cols_to_keep + self.numerator_columns
+
+        self.output_data = self.process_data[cols_to_keep]
+
+        # weight and reset
         self.output_data = self.output_data.groupby(
             [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
-        self.output_data[f'{self.input_numerator_column}_pc'] = self.output_data[self.input_numerator_column] / \
-            self.output_data[self.input_denominator_column]
-        self.output_data = self.output_data[[
-            self.weight_name_column, self.input_numerator_column, f'{self.input_numerator_column}_pc', self.input_denominator_column]]
+
+        # percentages
+        # for each input column
+        for col in self.numerator_columns:
+            self.output_data[f'{col}_pc'] = self.output_data[f'{self.input_numerator_column}_n'] / \
+                self.output_data[self.total_column]
 
     def export_output_data(self):
         self.output_data.to_csv(self.output_filepath, index=False)
