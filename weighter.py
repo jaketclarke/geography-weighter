@@ -14,7 +14,7 @@ class ModeSelect:
     def __init__(self):
         self.input_modes = ['postcode', 'sa2', 'sa3', 'suburb']
         self.output_modes = ['state electorates', 'federal electorates']
-        self.queestions = None
+        self.questions = None
         self.answers = None
         self.input_mode = None
         self.output_mode = None
@@ -50,8 +50,72 @@ class ModeSelect:
         self.set_answers()
 
 
-class Modes:
-    pass
+class RunOptions:
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
+    def __init__(self):
+        self.questions = None
+        self.answers = None
+        self.set_questions()
+
+    def set_questions(self):
+        self.questions = [
+            {
+                'type': 'input',
+                'name': 'input_file',
+                'message': 'Please enter the file path to your input file',
+                'default': 'test-data/2016Census_G01_AUS_POA_diff_name.csv',
+                'validate': FilePathValidator
+            }, {
+                'type': 'input',
+                'name': 'input_join_column',
+                'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
+                'default': 'POA_CODE_2016',
+                'validate': EmptyValidator
+            }, {
+                'type': 'input',
+                'name': 'input_numerator_column',
+                'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
+                'default': 'Counted_Census_Night_home_P',
+                'validate': EmptyValidator
+            }, {
+                'type': 'input',
+                'name': 'input_denominator_column',
+                'message': 'What is your total column (denominator, e.g Tot_P_P)',
+                'default': 'Tot_P_P',
+                'validate': EmptyValidator
+            }, {
+                'type': 'input',
+                'name': 'output_file',
+                'message': 'What subfolder do you want to use for your output file',
+                'default': 'output',
+                'validate': EmptyValidator
+            }, {
+                'type': 'input',
+                'name': 'output_file',
+                'message': 'What name do you want to use for your output file',
+                'default': 'file.csv',
+                'validate': EmptyValidator
+            }
+        ]
+
+    def get_answers(self):
+        self.answers = prompt(self.questions)
+
+    def prompt(self):
+        self.set_questions()
+        self.get_answers()
+
+
+class Weights:
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
+    def __init__(self, input_mode, output_mode):
+        self.input_mode = input_mode
+        self.output_mode = output_mode
 
 
 class Weight:
@@ -93,7 +157,7 @@ class Weight:
         # settings
         self.output_dir = 'output'
         self.output_file = 'file.csv'
-        self.output_filepath = self.output_dir + os.sep + self.output_file
+        self.output_filepath = None
 
         # need a neater way to do this - basically, if you are postcode-state, we want to
         if self.input_mode == 'postcode' and self.output_mode == 'state electorates':
@@ -176,5 +240,9 @@ class Weight:
         self.output_data = self.output_data[[
             self.weight_name_column, f'{self.input_numerator_column}_n', f'{self.input_numerator_column}_pc', f'{self.input_denominator_column}_total']]
 
+    def set_output_filepath(self):
+        self.output_filepath = self.output_dir + os.sep + self.output_file
+
     def export_output_data(self):
+        self.set_output_filepath()
         self.output_data.to_csv(self.output_filepath, index=False)
