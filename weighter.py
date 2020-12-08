@@ -63,7 +63,7 @@ class Weight:
     # if weighting postcode and state, this is the weight data you need
     def set_weight_data_postcode_state(self):
         self.update_properties({
-            'weight_file': 'test-data/poa_2016_sed_2013_concordance_vic_nonflat.csv',
+            'weight_file': 'weight-data/poa_2016_sed_2013_concordance_vic_nonflat.csv',
             'weight_join_column': 'POA_CODE_2016',
             'weight_name_column': 'district',
             'weight_proportion_overlap_column': 'proportion_in_district'
