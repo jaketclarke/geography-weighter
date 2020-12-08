@@ -38,9 +38,6 @@ class FilePathValidator(Validator):
 
 @click.command()
 def main():
-    """
-    Simple CLI for sending emails using SendGrid
-    """
     log("Geographic Weighter", color="green", figlet=True)
     log("Welcome to the Geographic Weighter", "green")
     log("This tool will take an input file with properties for a geography, such as census data by postcode, and output it by a different geography, for example federal electorates", "green")
@@ -77,21 +74,25 @@ def main():
             'type': 'input',
             'name': 'input_file',
             'message': 'Please enter the file path to your input file',
+            'default': 'test-data/2016Census_G01_AUS_POA_diff_name.csv',
             'validate': FilePathValidator
         }, {
             'type': 'input',
             'name': 'input_join_column',
             'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
+            'default': 'POA_CODE_2016',
             'validate': EmptyValidator
         }, {
             'type': 'input',
             'name': 'input_numerator_column',
             'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
+            'default': 'Counted_Census_Night_home_P',
             'validate': EmptyValidator
         }, {
             'type': 'input',
             'name': 'input_denominator_column',
             'message': 'What is your total column (denominator, e.g Tot_P_P)',
+            'default': 'Tot_P_P',
             'validate': EmptyValidator
         }
     ]
