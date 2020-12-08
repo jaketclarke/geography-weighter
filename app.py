@@ -44,6 +44,9 @@ def main():
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 
+    # break out to a separate section - have a class for 'weights', and a class for 'calc'
+    # should mean we can base the 'calc' class off a base class, with an implementation for each type of thing (postcode state etc)
+
     # Work out what kind of geography we are dealing with
     qtype = [
         {
@@ -105,7 +108,7 @@ def main():
 
     # implement postcode / state electorate
     # replace below with a call to the class
-    if w.input_mode == 'postcode' and w.output_mode == 'state electorates':
+    try:
         # load data
         w.get_input_data()
         w.get_weight_data()
@@ -115,8 +118,9 @@ def main():
         w.run_cull_data()
         # export
         w.export_output_data()
-    else:
-        log(f"Unfortunately weighting {w.input_mode} by {w.output_mode} is not implemented yet", color="red")
+    except:
+        log(f"Unfortunately, something went wrong", color="red")
+        log(f"{w}", color='green')
 
 
 if __name__ == '__main__':

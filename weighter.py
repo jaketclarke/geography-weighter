@@ -48,6 +48,8 @@ class Weight:
         # need a neater way to do this - basically, if you are postcode-state, we want to
         if self.input_mode == 'postcode' and self.output_mode == 'state electorates':
             self.postcode_state()
+        elif self.input_mode == 'postcode' and self.output_mode == 'federal electorates':
+            self.postcode_federal()
         else:
             log('Sorry, this combination of input and output modes is not implemented yet!', color='red')
 
@@ -67,9 +69,21 @@ class Weight:
             'weight_proportion_overlap_column': 'proportion_in_district'
         })
 
+    def set_weight_data_postcode_federal(self):
+        self.update_properties({
+            'weight_file': 'weight-data/poa_2016_ced_2016_concordance_aust_nonflat.csv',
+            'weight_join_column': 'postcode',
+            'weight_name_column': 'ced_2016',
+            'weight_proportion_overlap_column': 'proportion_in_ced_2016'
+        })
+
     # if postcode_state, set those weights
+
     def postcode_state(self):
         self.set_weight_data_postcode_state()
+
+    def postcode_federal(self):
+        self.set_weight_data_postcode_federal()
 
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)
