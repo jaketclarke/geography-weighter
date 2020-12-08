@@ -51,6 +51,8 @@ class Weight:
         else:
             log('Sorry, this combination of input and output modes is not implemented yet!', color='red')
 
+        self.debug = False
+
     # update several properties of the class with vals (eg from cmd line tool)
     def update_properties(self, data):
         for name, value in data.items():
@@ -79,10 +81,16 @@ class Weight:
         self.process_data = pd.merge(self.weight_data, self.input_data, how='left',
                                      left_on=self.weight_join_column, right_on=self.input_join_column)
 
+        if self.debug:
+            self.process_data.to_csv('debug/merge_data.csv')
+
     def run_process_data(self):
         self.process_data[self.input_numerator_column] = self.process_data[self.input_numerator_column] * \
             self.process_data[self.weight_proportion_overlap_column]
         self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
+
+        if self.debug:
+            self.process_data.to_csv('debug/process_data.csv')
 
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
@@ -91,8 +99,10 @@ class Weight:
         self.output_data = self.output_data.groupby(
             [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
+        self.output_data[f'{self.input_numerator_column}_pc'] = self.output_data[self.input_numerator_column] / \
+            self.output_data[self.input_denominator_column]
         self.output_data = self.output_data[[
-            self.weight_name_column, self.input_numerator_column]]
+            self.weight_name_column, self.input_numerator_column, f'{self.input_numerator_column}_pc', self.input_denominator_column]]
 
     def export_output_data(self):
         self.output_data.to_csv(self.output_filepath, index=False)
