@@ -2,6 +2,56 @@
 import pandas as pd
 import os
 from functions import log
+from validators import EmptyValidator, FilePathValidator
+from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
+
+
+class ModeSelect:
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
+    def __init__(self):
+        self.input_modes = ['postcode', 'sa2', 'sa3', 'suburb']
+        self.output_modes = ['state electorates', 'federal electorates']
+        self.queestions = None
+        self.answers = None
+        self.input_mode = None
+        self.output_mode = None
+
+    def set_questions(self):
+        self.questions = [
+            {
+                'type': 'list',
+                'name': 'input_mode',
+                'message': 'What is the geography of your input file?',
+                'choices': self.input_modes,
+                'validate': EmptyValidator
+            },
+            {
+                'type': 'list',
+                'name': 'output_mode',
+                'message': 'What geography do you want to output?',
+                'choices': self.output_modes,
+                'validate': EmptyValidator
+            }
+        ]
+
+    def get_answers(self):
+        self.answers = prompt(self.questions)
+
+    def set_answers(self):
+        self.input_mode = self.answers['input_mode']
+        self.output_mode = self.answers['output_mode']
+
+    def prompt(self):
+        self.set_questions()
+        self.get_answers()
+        self.set_answers()
+
+
+class Modes:
+    pass
 
 
 class Weight:

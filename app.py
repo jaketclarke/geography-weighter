@@ -3,37 +3,13 @@ import json
 import os
 import sys
 from functions import *
-from weighter import *
+from weighter import ModeSelect, Weight
 from pyfiglet import Figlet
 from clint.arguments import Args
 from clint.textui import puts, indent, colored
 import click
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
-
-
-class EmptyValidator(Validator):
-    def validate(self, value):
-        if len(value.text):
-            return True
-        else:
-            raise ValidationError(
-                message="You can't leave this blank",
-                cursor_position=len(value.text))
-
-
-class FilePathValidator(Validator):
-    def validate(self, value):
-        if len(value.text):
-            if os.path.isfile(value.text):
-                return True
-            else:
-                raise ValidationError(
-                    message="File not found",
-                    cursor_position=len(value.text))
-        else:
-            raise ValidationError(
-                message="You can't leave this blank",
-                cursor_position=len(value.text))
+from validators import EmptyValidator, FilePathValidator
 
 
 @click.command()
@@ -44,32 +20,12 @@ def main():
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 
-    # break out to a separate section - have a class for 'weights', and a class for 'calc'
-    # should mean we can base the 'calc' class off a base class, with an implementation for each type of thing (postcode state etc)
-
-    # Work out what kind of geography we are dealing with
-    qtype = [
-        {
-            'type': 'list',
-            'name': 'input_mode',
-            'message': 'What is the geography of your input file?',
-            'choices': ['postcode', 'sa2', 'sa3', 'suburb'],
-            'validate': EmptyValidator
-        },
-        {
-            'type': 'list',
-            'name': 'output_mode',
-            'message': 'What geography do you want to output?',
-            'choices': ['state electorates', 'federal electorates'],
-            'validate': EmptyValidator
-        }
-    ]
-
-    atype = prompt(qtype)
+    mode = ModeSelect()
+    mode.prompt()
 
     # initialise a weight object with the geog type specified
-    w = Weight(input_mode=atype['input_mode'],
-               output_mode=atype['output_mode'])
+    w = Weight(input_mode=mode.input_mode,
+               output_mode=mode.output_mode)
 
     # ask questions to do the weighting
     questions = [
