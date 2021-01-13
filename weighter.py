@@ -121,6 +121,9 @@ class Weight:
         self.input_mode = input_mode
         self.output_mode = output_mode
 
+        # weight configuration
+        self.weight_config_file = 'weight_config.json'
+
         # properties for input file
         # filepath
         self.input_file = None
@@ -174,26 +177,16 @@ class Weight:
             self.update_properties(weight_data)
 
         except:
-            raise NotImplementedError(
+            raise LookupError(
                 f'There is not a weight implementation for {self.input_mode} and {self.output_mode}')
 
     def load_weight_options(self):
-        data = '''{
-            "postcode_state electorates": {
-                "weight_file": "weight-data/poa_2016_sed_2013_concordance_vic_nonflat.csv",
-                "weight_join_column": "POA_CODE_2016",
-                "weight_name_column": "district",
-                "weight_proportion_overlap_column": "proportion_in_district"
-            },
-            "postcode_federal electorates": {
-                "weight_file": "weight-data/poa_2016_ced_2016_concordance_aust_nonflat.csv",
-                "weight_join_column": "postcode",
-                "weight_name_column": "ced_2016",
-                "weight_proportion_overlap_column": "proportion_in_ced_2016"
-            }
-        }'''
-
-        self.weight_definitions = json.loads(data)
+        try:
+            with open(self.weight_config_file, 'r') as f:
+                self.weight_definitions = json.loads(f.read())
+        except print(0):
+            raise ImportError(
+                f'There is not a properly formatted config file at {self.weight_config_file}')
 
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)

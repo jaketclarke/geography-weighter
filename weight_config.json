@@ -1,0 +1,14 @@
+{
+    "postcode_state electorates": {
+        "weight_file": "weight-data/poa_2016_sed_2013_concordance_vic_nonflat.csv",
+        "weight_join_column": "POA_CODE_2016",
+        "weight_name_column": "district",
+        "weight_proportion_overlap_column": "proportion_in_district"
+    },
+    "postcode_federal electorates": {
+        "weight_file": "weight-data/poa_2016_ced_2016_concordance_aust_nonflat.csv",
+        "weight_join_column": "postcode",
+        "weight_name_column": "ced_2016",
+        "weight_proportion_overlap_column": "proportion_in_ced_2016"
+    }
+}
