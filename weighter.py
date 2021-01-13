@@ -4,6 +4,8 @@ import os
 from functions import log
 from validators import EmptyValidator, FilePathValidator
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
+from abc import abstractmethod
+import json
 
 
 class ModeSelect:
@@ -109,15 +111,6 @@ class RunOptions:
         self.get_answers()
 
 
-class Weights:
-    def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
-
-    def __init__(self, input_mode, output_mode):
-        self.input_mode = input_mode
-        self.output_mode = output_mode
-
-
 class Weight:
 
     def __str__(self):
@@ -159,45 +152,48 @@ class Weight:
         self.output_file = 'file.csv'
         self.output_filepath = None
 
-        # need a neater way to do this - basically, if you are postcode-state, we want to
-        if self.input_mode == 'postcode' and self.output_mode == 'state electorates':
-            self.postcode_state()
-        elif self.input_mode == 'postcode' and self.output_mode == 'federal electorates':
-            self.postcode_federal()
-        else:
-            log('Sorry, this combination of input and output modes is not implemented yet!', color='red')
+        # the loading of weight options should come from the file system
+        # this should get broken into an input mode/set weights class, the weights class should just get the input data for readability
+
+        self.load_weight_options()
+        # break this into another func/class with the input mode stuff
+        self.set_weight_data()
 
         self.debug = False
 
     # update several properties of the class with vals (eg from cmd line tool)
+
     def update_properties(self, data):
         for name, value in data.items():
             setattr(self, name, value.strip())
 
-    # if weighting postcode and state, this is the weight data you need
-    def set_weight_data_postcode_state(self):
-        self.update_properties({
-            'weight_file': 'weight-data/poa_2016_sed_2013_concordance_vic_nonflat.csv',
-            'weight_join_column': 'POA_CODE_2016',
-            'weight_name_column': 'district',
-            'weight_proportion_overlap_column': 'proportion_in_district'
-        })
+    def set_weight_data(self):
+        try:
+            weight_key = f'{self.input_mode}_{self.output_mode}'
+            weight_data = self.weight_definitions[weight_key]
+            self.update_properties(weight_data)
 
-    def set_weight_data_postcode_federal(self):
-        self.update_properties({
-            'weight_file': 'weight-data/poa_2016_ced_2016_concordance_aust_nonflat.csv',
-            'weight_join_column': 'postcode',
-            'weight_name_column': 'ced_2016',
-            'weight_proportion_overlap_column': 'proportion_in_ced_2016'
-        })
+        except:
+            raise NotImplementedError(
+                f'There is not a weight implementation for {self.input_mode} and {self.output_mode}')
 
-    # if postcode_state, set those weights
+    def load_weight_options(self):
+        data = '''{
+            "postcode_state electorates": {
+                "weight_file": "weight-data/poa_2016_sed_2013_concordance_vic_nonflat.csv",
+                "weight_join_column": "POA_CODE_2016",
+                "weight_name_column": "district",
+                "weight_proportion_overlap_column": "proportion_in_district"
+            },
+            "postcode_federal electorates": {
+                "weight_file": "weight-data/poa_2016_ced_2016_concordance_aust_nonflat.csv",
+                "weight_join_column": "postcode",
+                "weight_name_column": "ced_2016",
+                "weight_proportion_overlap_column": "proportion_in_ced_2016"
+            }
+        }'''
 
-    def postcode_state(self):
-        self.set_weight_data_postcode_state()
-
-    def postcode_federal(self):
-        self.set_weight_data_postcode_federal()
+        self.weight_definitions = json.loads(data)
 
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)

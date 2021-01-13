@@ -23,12 +23,12 @@ def main():
     mode = ModeSelect()
     mode.prompt()
 
-    options = RunOptions()
-    options.prompt()
-
     # initialise a weight object with the geog type specified
     w = Weight(input_mode=mode.input_mode,
                output_mode=mode.output_mode)
+
+    options = RunOptions()
+    options.prompt()
 
     # update weight class with data entered
     w.update_properties(options.answers)
