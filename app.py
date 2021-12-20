@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from guts.functions import *
-from guts.weighter import ModeSelect, Weight, RunOptions
+from guts.weighter import ModeSelect, Weight, RunOptions, SelectInputFile
 from pyfiglet import Figlet
 from clint.arguments import Args
 from clint.textui import puts, indent, colored
@@ -20,12 +20,18 @@ def main():
     log("This process calculates population weighted percentages for the input fields, so requires a numeric input for each property, as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 
-    mode = ModeSelect()
+    file = SelectInputFile()
+    file.prompt()
+
+    print(file)
+
+    mode = ModeSelect(file.input_file)
     mode.prompt()
 
     # initialise a weight object with the geog type specified
     w = Weight(input_mode=mode.input_mode,
-               output_mode=mode.output_mode)
+               output_mode=mode.output_mode,
+               input_file=mode.input_file)
 
     options = RunOptions()
     options.prompt()

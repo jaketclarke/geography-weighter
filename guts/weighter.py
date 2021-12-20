@@ -8,17 +8,51 @@ from abc import abstractmethod
 import json
 
 
+class SelectInputFile:
+    
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
+    def __init__(self):
+        self.input_file = None
+        self.input_data = None
+
+    def get_input_data(self):
+        self.input_data = pd.read_csv(self.input_file)
+
+    def set_questions(self):
+        self.questions = [
+            {
+                'type': 'input',
+                'name': 'input_file',
+                'message': 'What is the path to your input file?',
+                'validate': EmptyValidator
+            }
+        ]
+
+    def get_answers(self):
+        self.answers = prompt(self.questions)
+
+    def set_answers(self):
+        self.input_file = self.answers['input_file']
+
+    def prompt(self):
+        self.set_questions()
+        self.get_answers()
+        self.set_answers()
+        self.get_input_data() #ToDo was here, read csv, pass to next step so we can pick which headers are numerators etc etc
 class ModeSelect:
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def __init__(self):
+    def __init__(self, input_file):
         self.input_modes = ['postcode', 'sa1', 'sa2', 'sa3', 'suburb']
         self.output_modes = ['state electorates', 'federal electorates']
         self.questions = None
         self.answers = None
         self.input_mode = None
+        self.input_file = input_file
         self.output_mode = None
         self.debug = True
 
@@ -65,13 +99,14 @@ class RunOptions:
 
     def set_questions(self):
         self.questions = [
+            # {
+            #     'type': 'input',
+            #     'name': 'input_file',
+            #     'message': 'Please enter the file path to your input file',
+            #     'default': 'test-data/2016Census_G01_AUS_POA_diff_name.csv',
+            #     'validate': FilePathValidator
+            # },
             {
-                'type': 'input',
-                'name': 'input_file',
-                'message': 'Please enter the file path to your input file',
-                'default': 'test-data/2016Census_G01_AUS_POA_diff_name.csv',
-                'validate': FilePathValidator
-            }, {
                 'type': 'input',
                 'name': 'input_join_column',
                 'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
@@ -121,17 +156,17 @@ class Weight:
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def __init__(self, input_mode, output_mode):
+    def __init__(self, input_mode, output_mode, input_file):
         # mode decider
         self.input_mode = input_mode
         self.output_mode = output_mode
+        self.input_file = input_file
 
         # weight configuration
         self.weight_config_file = 'weight-data/weight_config.json'
 
         # properties for input file
-        # filepath
-        self.input_file = None
+        # filepath\
         # column to join to weight on
         self.input_join_column = None
         # column to calc % from (numerator)
