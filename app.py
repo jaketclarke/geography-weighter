@@ -2,14 +2,14 @@
 import json
 import os
 import sys
-from functions import *
-from weighter import ModeSelect, Weight, RunOptions
+from guts.functions import *
+from guts.weighter import ModeSelect, Weight, RunOptions
 from pyfiglet import Figlet
 from clint.arguments import Args
 from clint.textui import puts, indent, colored
 import click
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
-from validators import EmptyValidator, FilePathValidator
+from guts.validators import EmptyValidator, FilePathValidator
 
 
 @click.command()
@@ -35,11 +35,11 @@ def main():
 
     # implement postcode / state electorate
     # replace below with a call to the class
-    try:
-        w.run()
-    except:
-        log(f"Unfortunately, something went wrong", color="red")
-        log(f"{w}", color='green')
+    # try:
+    w.run()
+    # except:
+    #     log(f"Unfortunately, something went wrong", color="red")
+    #     log(f"{w}", color='green')
 
 
 if __name__ == '__main__':

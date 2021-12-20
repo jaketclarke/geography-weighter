@@ -1,8 +1,8 @@
 # imports
 import pandas as pd
 import os
-from functions import log
-from validators import EmptyValidator, FilePathValidator
+from guts.functions import log
+from guts.validators import EmptyValidator, FilePathValidator
 from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
 from abc import abstractmethod
 import json
@@ -122,7 +122,7 @@ class Weight:
         self.output_mode = output_mode
 
         # weight configuration
-        self.weight_config_file = 'weight_config.json'
+        self.weight_config_file = 'weight-data/weight_config.json'
 
         # properties for input file
         # filepath
