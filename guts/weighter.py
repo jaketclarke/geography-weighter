@@ -17,9 +17,6 @@ class SelectInputFile:
         self.input_file = None
         self.input_data = None
 
-    def get_input_data(self):
-        self.input_data = pd.read_csv(self.input_file)
-
     def set_questions(self):
         self.questions = [
             {
@@ -40,19 +37,18 @@ class SelectInputFile:
         self.set_questions()
         self.get_answers()
         self.set_answers()
-        self.get_input_data() #ToDo was here, read csv, pass to next step so we can pick which headers are numerators etc etc
+
 class ModeSelect:
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def __init__(self, input_file):
+    def __init__(self):
         self.input_modes = ['postcode', 'sa1', 'sa2', 'sa3', 'suburb']
         self.output_modes = ['state electorates', 'federal electorates']
         self.questions = None
         self.answers = None
         self.input_mode = None
-        self.input_file = input_file
         self.output_mode = None
         self.debug = True
 
@@ -92,10 +88,15 @@ class RunOptions:
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
 
-    def __init__(self):
+    def __init__(self, input_file_headers):
         self.questions = None
         self.answers = None
-        self.set_questions()
+        self.input_file_headers = input_file_headers
+        self.input_file_headers_dict = []
+
+    def get_numerator_options(self):        
+        for header in self.input_file_headers:
+            self.input_file_headers_dict.append({'name':header, 'checked': True})        
 
     def set_questions(self):
         self.questions = [
@@ -107,19 +108,18 @@ class RunOptions:
             #     'validate': FilePathValidator
             # },
             {
-                'type': 'input',
+                'type': 'list',
                 'name': 'input_join_column',
                 'message': 'What is the name of the geography column in your file? (e.g, POA_CODE_2016)',
-                'default': 'POA_CODE_2016',
+
+                'choices': self.input_file_headers,
                 'validate': EmptyValidator
             }, {
-            # }, {
-            #     'type': 'input',
-            #     'name': 'input_numerator_column',
-            #     'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
-            #     'default': 'Counted_Census_Night_home_P',
-            #     'validate': EmptyValidator
-            #
+                'type': 'checkbox',
+                'name': 'input_numerator_columns',
+                'message': 'What properties do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
+                'choices': self.input_file_headers_dict,
+                'validate': EmptyValidator
             }, {
                 'type': 'input',
                 'name': 'input_denominator_column',
@@ -147,6 +147,7 @@ class RunOptions:
         self.answers = prompt(self.questions)
 
     def prompt(self):
+        self.get_numerator_options()
         self.set_questions()
         self.get_answers()
 
@@ -210,7 +211,9 @@ class Weight:
 
     def update_properties(self, data):
         for name, value in data.items():
-            setattr(self, name, value.strip())
+            
+            #ToDo strip white space from value if not list
+            setattr(self, name, value)
 
     def set_weight_data(self):
         try:

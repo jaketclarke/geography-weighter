@@ -2,6 +2,8 @@
 import json
 import os
 import sys
+
+import pandas as pd
 from guts.functions import *
 from guts.weighter import ModeSelect, Weight, RunOptions, SelectInputFile
 from pyfiglet import Figlet
@@ -23,17 +25,19 @@ def main():
     file = SelectInputFile()
     file.prompt()
 
-    print(file)
-
-    mode = ModeSelect(file.input_file)
+    mode = ModeSelect()
     mode.prompt()
+
+    data = pd.read_csv(file.input_file)
 
     # initialise a weight object with the geog type specified
     w = Weight(input_mode=mode.input_mode,
                output_mode=mode.output_mode,
-               input_file=mode.input_file)
+               input_file=file.input_file)
 
-    options = RunOptions()
+    # get data - #MAKE THIS A FUNCTION
+    input_file_headers = data.columns.values
+    options = RunOptions(input_file_headers)
     options.prompt()
 
     # update weight class with data entered
