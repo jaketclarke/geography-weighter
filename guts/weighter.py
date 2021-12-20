@@ -20,6 +20,7 @@ class ModeSelect:
         self.answers = None
         self.input_mode = None
         self.output_mode = None
+        self.debug = True
 
     def set_questions(self):
         self.questions = [
@@ -77,11 +78,13 @@ class RunOptions:
                 'default': 'POA_CODE_2016',
                 'validate': EmptyValidator
             }, {
-                'type': 'input',
-                'name': 'input_numerator_column',
-                'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
-                'default': 'Counted_Census_Night_home_P',
-                'validate': EmptyValidator
+            # }, {
+            #     'type': 'input',
+            #     'name': 'input_numerator_column',
+            #     'message': 'What property do you want to calculate? (numerator, e.g Counted_Census_Night_home_P)',
+            #     'default': 'Counted_Census_Night_home_P',
+            #     'validate': EmptyValidator
+            #
             }, {
                 'type': 'input',
                 'name': 'input_denominator_column',
@@ -102,6 +105,8 @@ class RunOptions:
                 'validate': EmptyValidator
             }
         ]
+
+    #ToDo - vary order so that we read input file first, list columns, and pick numerator, denominator etc etc
 
     def get_answers(self):
         self.answers = prompt(self.questions)
@@ -130,7 +135,9 @@ class Weight:
         # column to join to weight on
         self.input_join_column = None
         # column to calc % from (numerator)
-        self.input_numerator_column = None
+        # self.input_numerator_column = None
+        # trying to handle multiple columns
+        self.input_numerator_columns = ['Tot_P_M','Tot_P_F']
         # column to calc % from (denominator)
         self.input_denominator_column = None
 
@@ -162,7 +169,7 @@ class Weight:
         # break this into another func/class with the input mode stuff
         self.set_weight_data()
 
-        self.debug = False
+        self.debug = True
 
     # update several properties of the class with vals (eg from cmd line tool)
 
@@ -209,9 +216,11 @@ class Weight:
         # add total
         self.add_total_column()
 
-        # add numeric column
-        self.process_data[f'{self.input_numerator_column}_n'] = self.process_data[self.input_numerator_column] * \
-            self.process_data[self.weight_proportion_overlap_column]
+        # for each input column craete output
+        for col in self.input_numerator_columns:
+            self.process_data[f'{col}_n'] = self.process_data[col] * \
+                self.process_data[self.weight_proportion_overlap_column]
+            
         self.process_data[self.input_denominator_column] = self.process_data[self.input_denominator_column]
 
         if self.debug:
@@ -219,15 +228,26 @@ class Weight:
 
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
-        self.output_data = self.process_data[[
-            self.weight_name_column, self.weight_join_column, f'{self.input_numerator_column}_n', f'{self.input_denominator_column}_total']]
+        process_data_properties = [
+            self.weight_name_column, self.weight_join_column]
+            
+        for col in self.input_numerator_columns:
+            process_data_properties.append(f'{col}_n')
+            
+        process_data_properties.append(f'{self.input_denominator_column}_total')
+        self.output_data = self.process_data[process_data_properties]
         self.output_data = self.output_data.groupby(
             [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
-        self.output_data[f'{self.input_numerator_column}_pc'] = self.output_data[f'{self.input_numerator_column}_n'] / \
-            self.output_data[f'{self.input_denominator_column}_total']
-        self.output_data = self.output_data[[
-            self.weight_name_column, f'{self.input_numerator_column}_n', f'{self.input_numerator_column}_pc', f'{self.input_denominator_column}_total']]
+        for col in self.input_numerator_columns:
+            self.output_data[f'{col}_pc'] = self.output_data[f'{col}_n'] / \
+                self.output_data[f'{self.input_denominator_column}_total']
+        keep = [self.weight_name_column]
+        for col in self.input_numerator_columns:
+            keep.append(f'{col}_n')
+            keep.append(f'{col}_pc')
+        keep.append(f'{self.input_denominator_column}_total')
+        self.output_data = self.output_data[keep]
 
     def set_output_filepath(self):
         self.output_filepath = self.output_dir + os.sep + self.output_file
