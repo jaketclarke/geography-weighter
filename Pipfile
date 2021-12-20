@@ -10,6 +10,7 @@ clint = "*"
 click = "*"
 termcolor = "*"
 pyinquirer = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 pylint = "*"

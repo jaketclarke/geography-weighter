@@ -29,3 +29,27 @@ def log(string, color, font="slant", figlet=False):
                 string, font=font), color))
     else:
         six.print_(string)
+
+
+def get_filename_from_path(filepath: str) -> str:  
+    filename = ''
+
+    if '/' in filepath:
+        filename = filepath[filepath.rindex('/')+1:]
+    else:
+        filename = filepath
+
+    return filename
+
+def get_filename_from_path_without_extension(filepath: str) -> str:  
+    filename = ''
+
+    if '/' in filepath:
+        filename = filepath[filepath.rindex('/')+1:]
+    else:
+        filename = filepath
+
+    if '.' in filename:
+        filename = filename[:filename.rindex('.')]
+
+    return filename

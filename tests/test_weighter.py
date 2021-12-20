@@ -1,5 +1,5 @@
-from weighter import *
-from functions import *
+from guts.weighter import Weight
+from guts.functions import make_directorytree_if_not_exists
 import pytest
 import os
 
