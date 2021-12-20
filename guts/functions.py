@@ -40,3 +40,16 @@ def get_filename_from_path(filepath: str) -> str:
         filename = filepath
 
     return filename
+
+def get_filename_from_path_without_extension(filepath: str) -> str:  
+    filename = ''
+
+    if '/' in filepath:
+        filename = filepath[filepath.rindex('/')+1:]
+    else:
+        filename = filepath
+
+    if '.' in filename:
+        filename = filename[:filename.rindex('.')]
+
+    return filename

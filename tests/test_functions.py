@@ -13,7 +13,6 @@ def test_get_filename_from_path_works():
     s = 'dir1/test.csv'
     assert get_filename_from_path(s) == 'test.csv'
 
-
 def test_get_filename_from_path_nofilepath_two():
     
     s = 'test.xlsx'
@@ -23,3 +22,20 @@ def test_get_filename_from_path_manypaths():
     
     s = 'dir1/dir2/dir3/test.csv'
     assert get_filename_from_path(s) == 'test.csv'
+
+def test_get_filename_from_path_without_extension_works():
+    
+    s = 'dir1/test.csv'
+    assert get_filename_from_path_without_extension(s) == 'test'
+
+def test_get_filename_from_path_without_extension_nofilepath_two():
+    
+    s = 'test.xlsx'
+    assert get_filename_from_path_without_extension(s) == 'test'
+
+def test_get_filename_from_path_without_extension_manypaths():
+    
+    s = 'dir1/dir2/dir3/test.csv'
+    assert get_filename_from_path_without_extension(s) == 'test'
+
+    
