@@ -8,14 +8,15 @@ import os
 
 def test_weight_run():
     # create weight class
-    w = Weight(input_mode='postcode', output_mode='state electorates')
+    w = Weight(input_mode='postcode', output_mode='state electorates', input_file='test_data/2016Census_G01_AUS_POA.csv')
 
     # simulate the input data from the console
     w.update_properties({
         'input_file': 'test-data/2016Census_G01_AUS_POA.csv',
         'input_join_column': 'POA_CODE_2016',
         'input_numerator_column': 'Counted_Census_Night_home_P',
-        'input_denominator_column': 'Tot_P_P'
+        'input_denominator_column': 'Tot_P_P',
+        'output_file': 'test.csv'
     })
 
     # load data
