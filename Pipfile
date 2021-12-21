@@ -16,6 +16,7 @@ sentry-sdk = "*"
 pylint = "*"
 pytest = "*"
 autopep8 = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.8"
