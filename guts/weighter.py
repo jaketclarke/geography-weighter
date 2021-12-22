@@ -50,7 +50,7 @@ class ModeSelect:
         self.answers = None
         self.input_mode = None
         self.output_mode = None
-        self.debug = True
+        self.debug = False
 
     def set_questions(self):
         self.questions = [
