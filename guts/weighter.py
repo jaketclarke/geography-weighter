@@ -278,6 +278,7 @@ class Weight:
             [self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
         for col in self.input_numerator_columns:
+            # ToDo  PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead.  To get a de-fragmented frame, use `newframe = frame.copy()`
             self.output_data[f'{col}_pc'] = self.output_data[f'{col}_n'] / \
                 self.output_data[f'{self.input_denominator_column}_total']
         keep = [self.weight_name_column]
