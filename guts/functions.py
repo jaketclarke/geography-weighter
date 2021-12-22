@@ -18,7 +18,7 @@ def make_directorytree_if_not_exists(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-
+#ToDO work out how to test command line
 def log(string, color, font="slant", figlet=False):
     """Log string to cmd line
 
@@ -88,5 +88,6 @@ def empty_directory(folder: str) -> str:
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
+        #ToDo work out how to cause oserror to cover below with a test
         except OSError as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
