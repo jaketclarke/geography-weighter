@@ -8,34 +8,6 @@ from termcolor import colored
 import six
 from pyfiglet import figlet_format
 
-
-def load_json(file):
-    """[summary]
-
-    Loads a json file and returns data
-
-    Args:
-        file ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    with open(file, encoding='UTF-8') as file:
-        return json.load(file)
-
-
-def dump_json(data, outfilepath):
-    """
-    Takes a data file and dumps json
-
-    Args:
-        data ([type]): [description]
-        outfilepath ([type]): [description]
-    """
-    with open(outfilepath, 'w', encoding='UTF-8') as outfile:
-        json.dump(data, outfile)
-
-
 def make_directorytree_if_not_exists(path):
     """
     Ensure a directory path exists
