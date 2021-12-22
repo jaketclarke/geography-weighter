@@ -1,10 +1,8 @@
 # imports
 import pandas as pd
 import os
-from guts.functions import log
-from guts.validators import EmptyValidator, FilePathValidator
-from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
-from abc import abstractmethod
+from .validators import EmptyValidator
+from PyInquirer import prompt
 import json
 
 
