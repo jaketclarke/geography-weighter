@@ -43,10 +43,10 @@ def get_filename_from_path(filepath: str) -> str:
     Strip the filename from a path eg test.sql from foobar/test.sql
 
     Args:
-        filepath (str): [description]
+        filepath (str): [filename to get name from]
 
     Returns:
-        str: [description]
+        str: [filename]
     """
     filename = ''
 
@@ -62,10 +62,10 @@ def get_filename_from_path_without_extension(filepath: str) -> str:
     Strip the filename and extension from a path eg test from foobar/test.sql
 
     Args:
-        filepath (str): [description]
+        filepath (str): [filename to get name from]
 
     Returns:
-        str: [description]
+        str: [filename]
     """
     filename = ''
 
@@ -80,6 +80,14 @@ def get_filename_from_path_without_extension(filepath: str) -> str:
     return filename
 
 def empty_directory(folder: str) -> str:
+    """[summary]
+
+    Args:
+        folder (str): [folder to empty]
+
+    Returns:
+        None
+    """
 
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
