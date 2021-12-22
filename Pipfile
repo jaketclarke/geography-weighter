@@ -11,6 +11,7 @@ click = "*"
 termcolor = "*"
 pyinquirer = "*"
 sentry-sdk = "*"
+black = "*"
 
 [dev-packages]
 pylint = "*"
