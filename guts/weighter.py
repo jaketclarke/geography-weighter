@@ -50,7 +50,6 @@ class ModeSelect:
         self.answers = None
         self.input_mode = None
         self.output_mode = None
-        self.debug = True
 
     def set_questions(self):
         self.questions = [
@@ -205,7 +204,7 @@ class Weight:
         # break this into another func/class with the input mode stuff
         self.set_weight_data()
 
-        self.debug = True
+        self.debug = False
 
     # update several properties of the class with vals (eg from cmd line tool)
 
