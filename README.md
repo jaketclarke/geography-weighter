@@ -24,7 +24,7 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - `pipenv run pytest -v tests.py`
 
 ### Check test coverage
-- `pytest --cov=. tests/ --cov-report xml:cov.xml`
+- `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
 - `pipenv run coverage report -m`
 
 ## Ackowledgements

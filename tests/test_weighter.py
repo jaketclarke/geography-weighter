@@ -6,12 +6,16 @@ import os
 # tests for strip_parent_directory
 
 
-def test_weight_run():
+def test_run_weight_class_single_column():
+    """
+    TEST: will the module work to weight one file
+    """
     # create weight class
-    w = Weight(input_mode='postcode', output_mode='state electorates', input_file='test_data/2016Census_G01_AUS_POA.csv')
+    weight = Weight(input_mode='postcode', output_mode='state electorates', 
+        input_file='test_data/2016Census_G01_AUS_POA.csv')
 
     # simulate the input data from the console
-    w.update_properties({
+    weight.update_properties({
         'input_file': 'test-data/2016Census_G01_AUS_POA.csv',
         'input_join_column': 'POA_CODE_2016',
         'input_numerator_column': 'Counted_Census_Night_home_P',
@@ -20,16 +24,16 @@ def test_weight_run():
     })
 
     # load data
-    w.get_input_data()
-    w.get_weight_data()
+    weight.get_input_data()
+    weight.get_weight_data()
     # ensure output dir exists
-    make_directorytree_if_not_exists(w.output_dir)
+    make_directorytree_if_not_exists(weight.output_dir)
     # process
-    w.run_merge_data()
-    w.run_process_data()
-    w.run_cull_data()
+    weight.run_merge_data()
+    weight.run_process_data()
+    weight.run_cull_data()
     # export
-    w.export_output_data()
+    weight.export_output_data()
     # check export file exists
     assert os.path.exists(
-        w.output_filepath), f"Failed to find output file at {w.export_output_data}"
+        weight.output_filepath), f"Failed to find output file at {weight.export_output_data}"
