@@ -17,6 +17,7 @@ pylint = "*"
 pytest = "*"
 autopep8 = "*"
 pytest-cov = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

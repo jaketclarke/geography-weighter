@@ -23,6 +23,10 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 
 - `pipenv run pytest -v tests.py`
 
+### Check test coverage
+- `pytest --cov=. tests/ --cov-report xml:cov.xml`
+- `pipenv run coverage report -m`
+
 ## Ackowledgements
 
 Setup from: <https://hackernoon.com/reaching-python-development-nirvana-bb5692adf30c>, https://dev.to/py3course/setting-up-a-python-environment-in-2020-3e9e
