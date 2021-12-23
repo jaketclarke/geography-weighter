@@ -16,6 +16,7 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 
 - clone the repo
 - ensure you have pipenv installed
+- run `pipenv install --dev`
 - run `pipenv shell` to get a shell in a virtual environment
 - `pipenv run pre-commit install`
 - `pipenv run pre-commit run -a`
