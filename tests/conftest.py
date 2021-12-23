@@ -12,3 +12,5 @@ def ensure_clean_output():
     """
     empty_directory("output")
     return True
+
+#test
