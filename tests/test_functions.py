@@ -76,6 +76,7 @@ def test_empty_directory_works():
     """
     folder = "output"
     # ensure something in output dir
+    make_directorytree_if_not_exists(f"{folder}")
     Path(f"{folder}{os.sep}fake.txt").touch()
     # # delete dir
     empty_directory(folder)
