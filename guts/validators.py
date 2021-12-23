@@ -1,5 +1,6 @@
-from PyInquirer import Token, ValidationError, Validator, print_json, prompt, style_from_dict
 import os
+
+from PyInquirer import ValidationError, Validator
 
 
 class EmptyValidator(Validator):
@@ -8,8 +9,8 @@ class EmptyValidator(Validator):
             return True
         else:
             raise ValidationError(
-                message="You can't leave this blank",
-                cursor_position=len(value.text))
+                message="You can't leave this blank", cursor_position=len(value.text)
+            )
 
 
 class FilePathValidator(Validator):
@@ -18,10 +19,8 @@ class FilePathValidator(Validator):
             if os.path.isfile(value.text):
                 return True
             else:
-                raise ValidationError(
-                    message="File not found",
-                    cursor_position=len(value.text))
+                raise ValidationError(message="File not found", cursor_position=len(value.text))
         else:
             raise ValidationError(
-                message="You can't leave this blank",
-                cursor_position=len(value.text))
+                message="You can't leave this blank", cursor_position=len(value.text)
+            )

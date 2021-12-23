@@ -11,11 +11,17 @@ click = "*"
 termcolor = "*"
 pyinquirer = "*"
 sentry-sdk = "*"
+black = "*"
 
 [dev-packages]
 pylint = "*"
 pytest = "*"
 autopep8 = "*"
+pytest-cov = "*"
+coverage = "*"
+pre-commit = "*"
+flake8 = "*"
+isort = "*"
 
 [requires]
 python_version = "3.8"

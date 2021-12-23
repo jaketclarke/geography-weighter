@@ -17,11 +17,17 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - clone the repo
 - ensure you have pipenv installed
 - run `pipenv shell` to get a shell in a virtual environment
+- `pipenv run pre-commit install`
+- `pipenv run pre-commit run -a`
 - run the app with `pipenv run python app.py --help`
 
 ### Run tests
 
 - `pipenv run pytest -v tests.py`
+
+### Check test coverage
+- `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
+- `pipenv run coverage report -m`
 
 ## Ackowledgements
 
@@ -33,3 +39,5 @@ Tests influenced by: <https://semaphoreci.com/community/tutorials/testing-python
 <https://tryexceptpass.org/article/pytest-github-integration/>
 
 CLI influenced by: <https://codeburst.io/building-beautiful-command-line-interfaces-with-python-26c7e1bb54df>
+
+Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>
