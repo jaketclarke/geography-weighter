@@ -8,6 +8,7 @@ from termcolor import colored
 import six
 from pyfiglet import figlet_format
 
+
 def make_directorytree_if_not_exists(path):
     """
     Ensure a directory path exists
@@ -18,7 +19,8 @@ def make_directorytree_if_not_exists(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-#ToDO work out how to test command line
+
+# ToDO work out how to test command line
 def log(string, color, font="slant", figlet=False):
     """Log string to cmd line
 
@@ -32,8 +34,7 @@ def log(string, color, font="slant", figlet=False):
         if not figlet:
             six.print_(colored(string, color))
         else:
-            six.print_(colored(figlet_format(
-                string, font=font), color))
+            six.print_(colored(figlet_format(string, font=font), color))
     else:
         six.print_(string)
 
@@ -48,14 +49,15 @@ def get_filename_from_path(filepath: str) -> str:
     Returns:
         str: [filename]
     """
-    filename = ''
+    filename = ""
 
-    if '/' in filepath:
-        filename = filepath[filepath.rindex('/')+1:]
+    if "/" in filepath:
+        filename = filepath[filepath.rindex("/") + 1 :]
     else:
         filename = filepath
 
     return filename
+
 
 def get_filename_from_path_without_extension(filepath: str) -> str:
     """
@@ -67,17 +69,18 @@ def get_filename_from_path_without_extension(filepath: str) -> str:
     Returns:
         str: [filename]
     """
-    filename = ''
+    filename = ""
 
-    if '/' in filepath:
-        filename = filepath[filepath.rindex('/')+1:]
+    if "/" in filepath:
+        filename = filepath[filepath.rindex("/") + 1 :]
     else:
         filename = filepath
 
-    if '.' in filename:
-        filename = filename[:filename.rindex('.')]
+    if "." in filename:
+        filename = filename[: filename.rindex(".")]
 
     return filename
+
 
 def empty_directory(folder: str) -> str:
     """[summary]
@@ -96,6 +99,6 @@ def empty_directory(folder: str) -> str:
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
-        #ToDo work out how to cause oserror to cover below with a test
+        # ToDo work out how to cause oserror to cover below with a test
         except OSError as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
+            print(f"Failed to delete {file_path}. Reason: {e}")

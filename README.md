@@ -17,7 +17,7 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - clone the repo
 - ensure you have pipenv installed
 - run `pipenv shell` to get a shell in a virtual environment
-- run `setup.sh` to configure the pre-hook for linting
+- `git add .pre-commit-config.yaml pyproject.toml .flake8`
 - run the app with `pipenv run python app.py --help`
 
 ### Run tests
@@ -39,4 +39,4 @@ Tests influenced by: <https://semaphoreci.com/community/tutorials/testing-python
 
 CLI influenced by: <https://codeburst.io/building-beautiful-command-line-interfaces-with-python-26c7e1bb54df>
 
-Code structure influenced by: <https://towardsdatascience.com/keep-your-code-clean-using-black-pylint-git-hooks-pre-commit-baf6991f7376>
+Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>

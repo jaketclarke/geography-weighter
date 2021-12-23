@@ -6,10 +6,10 @@ import click
 from guts.functions import log
 from guts.weighter import ModeSelect, Weight, RunOptions, SelectInputFile
 
+
 @click.command()
 def main():
-    """CMD line utilty to do the weighting
-    """
+    """CMD line utilty to do the weighting"""
     log("Geographic Weighter", color="green", figlet=True)
     log("Welcome to the Geographic Weighter", "green")
     log("This tool takes an input file with properties for an area, eg  data by SA1,", "green")
@@ -28,9 +28,9 @@ def main():
     data = pd.read_csv(file.input_file)
 
     # initialise a weight object with the geog type specified
-    weight = Weight(input_mode=mode.input_mode,
-               output_mode=mode.output_mode,
-               input_file=file.input_file)
+    weight = Weight(
+        input_mode=mode.input_mode, output_mode=mode.output_mode, input_file=file.input_file
+    )
 
     # get data - #MAKE THIS A FUNCTION
     input_file_headers = data.columns.values
@@ -49,5 +49,5 @@ def main():
     #     log(f"{w}", color='green')
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

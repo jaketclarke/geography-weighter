@@ -19,6 +19,7 @@ pytest = "*"
 autopep8 = "*"
 pytest-cov = "*"
 coverage = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.8"
