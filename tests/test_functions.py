@@ -89,6 +89,7 @@ def test_empty_directory_nested_works():
     """
     folder = "output"
     # ensure something in output dir
+    make_directorytree_if_not_exists(f"{folder}")
     Path(f"{folder}{os.sep}fake.txt").touch()
     make_directorytree_if_not_exists(f"{folder}{os.sep}{folder}")
     Path(f"{folder}{os.sep}{folder}{os.sep}fake.txt").touch()
