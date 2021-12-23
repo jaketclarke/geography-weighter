@@ -17,7 +17,8 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - clone the repo
 - ensure you have pipenv installed
 - run `pipenv shell` to get a shell in a virtual environment
-- `git add .pre-commit-config.yaml pyproject.toml .flake8`
+- `pipenv run pre-commit install`
+- `pipenv run pre-commit run -a`
 - run the app with `pipenv run python app.py --help`
 
 ### Run tests

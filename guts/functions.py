@@ -1,12 +1,12 @@
 """
 Module of helper functions to be used through the project
 """
-import json
 import os
 import shutil
-from termcolor import colored
+
 import six
 from pyfiglet import figlet_format
+from termcolor import colored
 
 
 def make_directorytree_if_not_exists(path):
@@ -52,7 +52,9 @@ def get_filename_from_path(filepath: str) -> str:
     filename = ""
 
     if "/" in filepath:
-        filename = filepath[filepath.rindex("/") + 1 :]
+        # fmt: off
+        filename = filepath[filepath.rindex("/") + 1:]
+        # fmt: on
     else:
         filename = filepath
 
@@ -72,7 +74,9 @@ def get_filename_from_path_without_extension(filepath: str) -> str:
     filename = ""
 
     if "/" in filepath:
-        filename = filepath[filepath.rindex("/") + 1 :]
+        # fmt: off
+        filename = filepath[filepath.rindex("/") + 1:]
+        # fmt: on
     else:
         filename = filepath
 

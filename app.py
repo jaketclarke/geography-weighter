@@ -1,10 +1,11 @@
 """
 CMD line utilty to do the weighting
 """
-import pandas as pd
 import click
+import pandas as pd
+
 from guts.functions import log
-from guts.weighter import ModeSelect, Weight, RunOptions, SelectInputFile
+from guts.weighter import ModeSelect, RunOptions, SelectInputFile, Weight
 
 
 @click.command()

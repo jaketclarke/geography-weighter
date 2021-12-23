@@ -3,10 +3,13 @@ Tests for the functions in guts.functions
 """
 import os
 from pathlib import Path
-from guts.functions import get_filename_from_path
-from guts.functions import get_filename_from_path_without_extension
-from guts.functions import empty_directory
-from guts.functions import make_directorytree_if_not_exists
+
+from guts.functions import (
+    empty_directory,
+    get_filename_from_path,
+    get_filename_from_path_without_extension,
+    make_directorytree_if_not_exists,
+)
 
 
 def test_get_filename_from_path_nofilepath():

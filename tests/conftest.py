@@ -2,6 +2,7 @@
 Fixture set for tests
 """
 import pytest
+
 from guts.functions import empty_directory
 
 
@@ -12,6 +13,3 @@ def ensure_clean_output():
     """
     empty_directory("output")
     return True
-
-
-# test

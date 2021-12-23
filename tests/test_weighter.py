@@ -1,10 +1,14 @@
-from guts.weighter import Weight
-from guts.functions import make_directorytree_if_not_exists
-import pytest
+"""
+Tests for guts.weighter
+"""
 import os
+
+from guts.functions import make_directorytree_if_not_exists
+from guts.weighter import Weight
 
 
 def test_run_weight_class_single_column(ensure_clean_output):
+    # pylint: disable=unused-argument
     """
     TEST: will the module work to weight one column from file
     """
@@ -38,6 +42,7 @@ def test_run_weight_class_single_column(ensure_clean_output):
     weight.run_cull_data()
     # export
     weight.export_output_data()
+    # add new comment
     # check export file exists
     assert os.path.exists(
         weight.output_filepath
@@ -45,6 +50,7 @@ def test_run_weight_class_single_column(ensure_clean_output):
 
 
 def test_run_weight_class_multiple_columns(ensure_clean_output):
+    # pylint: disable=unused-argument
     """
     TEST: will the module work to weight multiple columns from one file
     """

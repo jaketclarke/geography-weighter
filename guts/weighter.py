@@ -1,9 +1,11 @@
 # imports
-import pandas as pd
-import os
-from .validators import EmptyValidator
-from PyInquirer import prompt
 import json
+import os
+
+import pandas as pd
+from PyInquirer import prompt
+
+from .validators import EmptyValidator
 
 
 class SelectInputFile:
@@ -95,13 +97,6 @@ class RunOptions:
 
     def set_questions(self):
         self.questions = [
-            # {
-            #     'type': 'input',
-            #     'name': 'input_file',
-            #     'message': 'Please enter the file path to your input file',
-            #     'default': 'test-data/2016Census_G01_AUS_POA_diff_name.csv',
-            #     'validate': FilePathValidator
-            # },
             {
                 "type": "list",
                 "name": "input_join_column",
@@ -143,8 +138,6 @@ class RunOptions:
                 "validate": EmptyValidator,
             },
         ]
-
-    # ToDo - vary order so that we read input file first, list columns, and pick numerator, denominator etc etc
 
     def get_answers(self):
         self.answers = prompt(self.questions)
@@ -201,7 +194,8 @@ class Weight:
         self.output_filepath = None
 
         # the loading of weight options should come from the file system
-        # this should get broken into an input mode/set weights class, the weights class should just get the input data for readability
+        # this should get broken into an input mode/set weights class
+        # the weights class should just get the input data for readability
 
         self.load_weight_options()
         # break this into another func/class with the input mode stuff
@@ -223,19 +217,16 @@ class Weight:
             weight_data = self.weight_definitions[weight_key]
             self.update_properties(weight_data)
 
-        except:
-            raise LookupError(
-                f"There is not a weight implementation for {self.input_mode} and {self.output_mode}"
-            )
+        except LookupError:
+            f"There is not a weight implementation for {self.input_mode} and {self.output_mode}"
 
     def load_weight_options(self):
         try:
             with open(self.weight_config_file, "r") as f:
                 self.weight_definitions = json.loads(f.read())
-        except print(0):
-            raise ImportError(
-                f"There is not a properly formatted config file at {self.weight_config_file}"
-            )
+        # ToDO error logger
+        except ImportError:
+            f"There is not a properly formatted config file at {self.weight_config_file}"
 
     def get_input_data(self):
         self.input_data = pd.read_csv(self.input_file)
@@ -290,7 +281,8 @@ class Weight:
         self.output_data = self.output_data.groupby([self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
         for col in self.input_numerator_columns:
-            # ToDo  PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead.  To get a de-fragmented frame, use `newframe = frame.copy()`
+            # ToDo  PerformanceWarning: DataFrame is highly fragmented.
+            # This is usually the result of calling `frame.insert` ...
             self.output_data[f"{col}_pc"] = (
                 self.output_data[f"{col}_n"]
                 / self.output_data[f"{self.input_denominator_column}_total"]

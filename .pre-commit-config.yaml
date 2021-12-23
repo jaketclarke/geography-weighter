@@ -1,4 +1,4 @@
-exclude: '.git|.tox'
+exclude: '.git|.tox|.csv'
 default_stages: [commit]
 fail_fast: true
 
