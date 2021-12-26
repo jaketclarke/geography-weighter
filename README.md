@@ -45,4 +45,4 @@ Tests influenced by: <https://semaphoreci.com/community/tutorials/testing-python
 
 CLI influenced by: <https://codeburst.io/building-beautiful-command-line-interfaces-with-python-26c7e1bb54df>
 
-Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>
+Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>, and <https://sourcery.ai/blog/python-best-practices>
