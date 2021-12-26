@@ -30,12 +30,9 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 
 
 ### Commit changes
-- ensure our developer machine (not env) has precommit and pytest (git commit will run on our computer, so it needs these things to run the hoook)
-- `pip install pre-commit pytest`
-- in the root of the git repo:
+- in the root of the git repo
 - `pre-commit install`
-- before committing:
-- `pre-commit run -a`
+- then use git as normal
 
 ## Ackowledgements
 
