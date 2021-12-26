@@ -18,8 +18,6 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - ensure you have pipenv installed
 - run `pipenv install --dev`
 - run `pipenv shell` to get a shell in a virtual environment
-- `pipenv run pre-commit install`
-- `pipenv run pre-commit run -a`
 - run the app with `pipenv run python app.py --help`
 
 ### Run tests
@@ -29,6 +27,15 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 ### Check test coverage
 - `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
 - `pipenv run coverage report -m`
+
+
+### Commit changes
+- ensure our developer machine (not env) has precommit and pytest (git commit will run on our computer, so it needs these things to run the hoook)
+- `pip install pre-commit pytest`
+- in the root of the git repo:
+- `pre-commit install`
+- before committing:
+- `pre-commit run -a`
 
 ## Ackowledgements
 
