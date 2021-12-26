@@ -16,7 +16,7 @@ def main():
     log("This tool takes an input file with properties for an area, eg  data by SA1,", "green")
     log("It then outputs it by a different area, eg by federal electorate", "green")
     log("This process calculates population weighted percentages for the input fields,", "green")
-    log("so requires a numeric input for each property,", "`green")
+    log("so requires a numeric input for each property,", "green")
     log("as well as a total population column for the area", "green")
     log("To get started, enter the path to your file below:", "green")
 

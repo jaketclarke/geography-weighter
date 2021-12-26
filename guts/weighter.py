@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from PyInquirer import prompt
 
+from .functions import make_directorytree_if_not_exists
 from .validators import EmptyValidator
 
 
@@ -244,6 +245,7 @@ class Weight:
         )
 
         if self.debug:
+            make_directorytree_if_not_exists("debug")
             self.process_data.to_csv("debug/merge_data.csv")
 
     def add_total_column(self):
@@ -267,6 +269,7 @@ class Weight:
         ]
 
         if self.debug:
+            make_directorytree_if_not_exists("debug")
             self.process_data.to_csv("debug/process_data.csv")
 
     def run_cull_data(self):

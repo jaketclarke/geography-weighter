@@ -18,8 +18,6 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - ensure you have pipenv installed
 - run `pipenv install --dev`
 - run `pipenv shell` to get a shell in a virtual environment
-- `pipenv run pre-commit install`
-- `pipenv run pre-commit run -a`
 - run the app with `pipenv run python app.py --help`
 
 ### Run tests
@@ -29,6 +27,12 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 ### Check test coverage
 - `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
 - `pipenv run coverage report -m`
+
+
+### Commit changes
+- in the root of the git repo
+- `pre-commit install`
+- then use git as normal
 
 ## Ackowledgements
 
@@ -41,4 +45,4 @@ Tests influenced by: <https://semaphoreci.com/community/tutorials/testing-python
 
 CLI influenced by: <https://codeburst.io/building-beautiful-command-line-interfaces-with-python-26c7e1bb54df>
 
-Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>
+Code structure influenced by: <https://levelup.gitconnected.com/raise-the-bar-of-code-quality-in-python-projects-7c49743f004f>, and <https://sourcery.ai/blog/python-best-practices>
