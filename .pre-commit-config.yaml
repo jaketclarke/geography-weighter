@@ -49,16 +49,3 @@ repos:
         entry: pipenv run pytest --cov=guts --cov=. --cov-fail-under=80 --cov-config=.coveragerc
         types: [python]
         pass_filenames: false
-
-  # - repo: local
-  #   hooks:
-  #     - id: pytest-check
-  #       name: pytest-check
-  #       entry: pytest
-  #       language: python_venv
-  #       pass_filenames: false
-  #       always_run: true
-  #       # additional_dependencies: [pytest, pyfiglet]
-  #       additional_dependencies:
-  #       - .
-  #       - pyfiglet
