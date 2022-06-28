@@ -16,5 +16,10 @@
         "weight_join_column": "SA1_CODE_2016",
         "weight_name_column": "district",
         "weight_proportion_overlap_column": "proportion_in_district"
+    },"sa1-2021_state electorates": {
+        "weight_file": "weight-data/sa1_2021_sed_2022_concordance_vic_nonflat.csv",
+        "weight_join_column": "SA1_CODE_2021",
+        "weight_name_column": "district",
+        "weight_proportion_overlap_column": "proportion_in_district"
     }
 }
