@@ -44,7 +44,7 @@ class ModeSelect:
         return str(self.__class__) + ": " + str(self.__dict__)
 
     def __init__(self):
-        self.input_modes = ["postcode", "sa1", "sa2", "sa3", "suburb"]
+        self.input_modes = ["postcode", "sa1", "sa1-2021", "sa2", "sa3", "suburb"]
         self.output_modes = ["state electorates", "federal electorates"]
         self.questions = None
         self.answers = None
