@@ -12,6 +12,7 @@ termcolor = "*"
 pyinquirer = "*"
 sentry-sdk = "*"
 black = "*"
+openpyxl = "*"
 
 [dev-packages]
 pylint = "*"
