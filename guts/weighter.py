@@ -134,8 +134,8 @@ class RunOptions:
             {
                 "type": "input",
                 "name": "output_file",
-                "message": "What name do you want to use for your output file",
-                "default": "file.csv",
+                "message": "What prefix do you want to use for your output files?",
+                "default": "file",
                 "validate": EmptyValidator,
             },
         ]
@@ -192,7 +192,7 @@ class Weight:
 
         # settings
         self.output_dir = "output"
-        self.output_file = "file.csv"
+        self.output_file = "file"
         self.output_filepath = None
 
         # the loading of weight options should come from the file system
@@ -301,31 +301,26 @@ class Weight:
         keep.append(f"{self.input_denominator_column}_total")
         self.output_data = self.output_data[keep]
 
-    def set_output_filepath(self):
-        self.output_filepath = self.output_dir + os.sep + self.output_file
-
     def export_output_data(self):
-        self.set_output_filepath()
-        self.output_data.to_csv(self.output_filepath, index=False)
+        path = self.output_dir + os.sep + self.output_file + '.csv'
+        self.output_data.to_csv(path, index=False)
 
     def export_output_data_unpivoted(self):
-        self.set_output_filepath()
-        self.output_filepath = self.output_filepath.replace('.csv', '_unpivoted.csv')
+        path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
         self.output_data_unpivoted = self.output_data.melt(id_vars = 'district', var_name = 'census_variable', value_name = 'value')
-        self.output_data_unpivoted.to_csv(self.output_filepath, index=False)
+        self.output_data_unpivoted.to_csv(path, index=False)
 
     def export_output_data_pc(self):
         df = self.output_data
-
         out = df[df.columns[~df.columns.str.endswith('_n')]]
-        path = self.output_filepath.replace('.csv','_pc.csv')
+        path = self.output_dir + os.sep + f'{self.output_file}_pc' + '.csv'
         out.to_csv(path, index=False)
 
     def export_output_data_n(self):
         df = self.output_data
 
         out = df[df.columns[~df.columns.str.endswith('_pc')]]
-        path = self.output_filepath.replace('.csv','_n.csv')
+        path = self.output_dir + os.sep + f'{self.output_file}_n' + '.csv'
         out.to_csv(path, index=False)
 
     def run(self):

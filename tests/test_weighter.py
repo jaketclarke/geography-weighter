@@ -26,14 +26,15 @@ def test_run_weight_class_single_column(ensure_clean_output):
             "input_join_column": "POA_CODE_2016",
             "input_numerator_columns": ["Counted_Census_Night_home_P"],
             "input_denominator_column": "Tot_P_P",
-            "output_file": "test.csv",
+            "output_file": "test",
         }
     )
 
     weight.run()
 
+    output_file_one = weight.output_dir + os.sep + weight.output_file + '.csv'
     assert os.path.exists(
-        weight.output_filepath
+        output_file_one
     ), f"Failed to find output file at {weight.export_output_data}"
 
 
@@ -62,7 +63,9 @@ def test_run_weight_class_multiple_columns(ensure_clean_output):
     )
 
     weight.run()
+    
+    output_file_one = weight.output_dir + os.sep + weight.output_file + '.csv'
 
     assert os.path.exists(
-        weight.output_filepath
+        output_file_one
     ), f"Failed to find output file at {weight.export_output_data}"
