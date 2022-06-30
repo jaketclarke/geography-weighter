@@ -8,14 +8,6 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 |--------------|-----------|
 | ![Output Example Image](readme/data-sa1.png) |  ![Output Example Image](readme/data-district.png)  |
 
-## Tool in use
-
-| Example Input| Example Output |
-|--------------|-----------|
-| ![Output Example Image](readme/run-1.png) |  ![Output Example Image](readme/run-2.png)  |
-| ![Output Example Image](readme/run-3.png) |  ![Output Example Image](readme/run-4.png)  |
-| ![Output Example Image](readme/run-5.png) |  ![Output Example Image](readme/run-6.png)  |
-| ![Output Example Image](readme/run-7.png) |  |
 
 ## Development Environment
 
