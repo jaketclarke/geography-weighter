@@ -188,6 +188,7 @@ class Weight:
         self.weight_data = None
         self.process_data = None
         self.output_data = None
+        self.output_data_unpivoted = None
 
         # settings
         self.output_dir = "output"
@@ -277,23 +278,26 @@ class Weight:
         process_data_properties = [self.weight_name_column, self.weight_join_column]
 
         for col in self.input_numerator_columns:
-            process_data_properties.append(f"{col}_n")
+            if col != self.input_join_column:
+                process_data_properties.append(f"{col}_n")
 
         process_data_properties.append(f"{self.input_denominator_column}_total")
         self.output_data = self.process_data[process_data_properties]
         self.output_data = self.output_data.groupby([self.weight_name_column]).sum()
         self.output_data = self.output_data.reset_index()
         for col in self.input_numerator_columns:
-            # ToDo  PerformanceWarning: DataFrame is highly fragmented.
-            # This is usually the result of calling `frame.insert` ...
-            self.output_data[f"{col}_pc"] = (
-                self.output_data[f"{col}_n"]
-                / self.output_data[f"{self.input_denominator_column}_total"]
-            )
+            if col != self.input_join_column:
+                # ToDo  PerformanceWarning: DataFrame is highly fragmented.
+                # This is usually the result of calling `frame.insert` ...
+                self.output_data[f"{col}_pc"] = (
+                    self.output_data[f"{col}_n"]
+                    / self.output_data[f"{self.input_denominator_column}_total"]
+                )
         keep = [self.weight_name_column]
         for col in self.input_numerator_columns:
-            keep.append(f"{col}_n")
-            keep.append(f"{col}_pc")
+            if col != self.input_join_column:
+                keep.append(f"{col}_n")
+                keep.append(f"{col}_pc")
         keep.append(f"{self.input_denominator_column}_total")
         self.output_data = self.output_data[keep]
 
@@ -303,6 +307,12 @@ class Weight:
     def export_output_data(self):
         self.set_output_filepath()
         self.output_data.to_csv(self.output_filepath, index=False)
+
+    def export_output_data_unpivoted(self):
+        self.set_output_filepath()
+        self.output_filepath = self.output_filepath.replace('.csv', '_unpivoted.csv')
+        self.output_data_unpivoted = self.output_data.melt(id_vars = 'district', var_name = 'census_variable', value_name = 'value')
+        self.output_data_unpivoted.to_csv(self.output_filepath, index=False)
 
     def run(self):
         # load data
@@ -314,3 +324,5 @@ class Weight:
         self.run_cull_data()
         # export
         self.export_output_data()
+        # export unpivoted data
+        self.export_output_data_unpivoted()
