@@ -4,6 +4,10 @@ A tool to weight input data by geography.
 
 This tool helps you solve the problem "I have this data by postcode, and I'd like to have it by federal electorate".
 
+## Image Test
+
+![Output Example Image](readme/data-img-district.png)
+
 ## Development Environment
 
 - pyenv for python versioning
@@ -27,7 +31,6 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 ### Check test coverage
 - `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
 - `pipenv run coverage report -m`
-
 
 ### Commit changes
 - in the root of the git repo
