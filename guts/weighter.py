@@ -314,6 +314,20 @@ class Weight:
         self.output_data_unpivoted = self.output_data.melt(id_vars = 'district', var_name = 'census_variable', value_name = 'value')
         self.output_data_unpivoted.to_csv(self.output_filepath, index=False)
 
+    def export_output_data_pc(self):
+        df = self.output_data
+
+        out = df[df.columns[~df.columns.str.endswith('_n')]]
+        path = self.output_filepath.replace('.csv','_pc.csv')
+        out.to_csv(path, index=False)
+
+    def export_output_data_n(self):
+        df = self.output_data
+
+        out = df[df.columns[~df.columns.str.endswith('_pc')]]
+        path = self.output_filepath.replace('.csv','_n.csv')
+        out.to_csv(path, index=False)
+
     def run(self):
         # load data
         self.get_input_data()
@@ -326,3 +340,6 @@ class Weight:
         self.export_output_data()
         # export unpivoted data
         self.export_output_data_unpivoted()
+
+        self.export_output_data_pc()
+        self.export_output_data_n()
