@@ -126,7 +126,7 @@ class RunOptions:
             },
             {
                 "type": "input",
-                "name": "output_file",
+                "name": "output_dir",
                 "message": "What subfolder do you want to use for your output file",
                 "default": "output",
                 "validate": EmptyValidator,
