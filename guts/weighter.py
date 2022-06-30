@@ -283,7 +283,7 @@ class Weight:
 
         process_data_properties.append(f"{self.input_denominator_column}_total")
         self.output_data = self.process_data[process_data_properties]
-        self.output_data = self.output_data.groupby([self.weight_name_column]).sum()
+        self.output_data = self.output_data.groupby([self.weight_name_column]).sum().round(0)
         self.output_data = self.output_data.reset_index()
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
@@ -292,7 +292,7 @@ class Weight:
                 self.output_data[f"{col}_pc"] = (
                     self.output_data[f"{col}_n"]
                     / self.output_data[f"{self.input_denominator_column}_total"]
-                )
+                ).round(4)
         keep = [self.weight_name_column]
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
