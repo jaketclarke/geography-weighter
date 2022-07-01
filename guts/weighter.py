@@ -4,7 +4,6 @@ import os
 
 import pandas as pd
 from PyInquirer import prompt
-
 from .functions import make_directorytree_if_not_exists
 from .validators import EmptyValidator
 
@@ -247,7 +246,7 @@ class Weight:
 
         if self.debug:
             make_directorytree_if_not_exists("debug")
-            self.process_data.to_csv("debug/merge_data.csv")
+            self.process_data.to_csv("debug/merge_data.csv", index=False, na_rep='Null')
 
     def add_total_column(self):
         self.process_data[f"{self.input_denominator_column}_total"] = (
@@ -271,7 +270,7 @@ class Weight:
 
         if self.debug:
             make_directorytree_if_not_exists("debug")
-            self.process_data.to_csv("debug/process_data.csv")
+            self.process_data.to_csv("debug/process_data.csv", index=False, na_rep='Null')
 
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
@@ -282,17 +281,22 @@ class Weight:
                 process_data_properties.append(f"{col}_n")
 
         process_data_properties.append(f"{self.input_denominator_column}_total")
-        self.output_data = self.process_data[process_data_properties]
-        self.output_data = self.output_data.groupby([self.weight_name_column]).sum().round(0)
+        self.output_data = self.process_data[process_data_properties]       
+        # if the entire column is NaN, min count below will ensure the output is NaN
+        # this is put in because the 2021 census data has some data not released at the sa1 level
+        self.output_data = self.output_data.groupby([self.weight_name_column]).sum(min_count=1).round(0)
         self.output_data = self.output_data.reset_index()
+
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
                 # ToDo  PerformanceWarning: DataFrame is highly fragmented.
                 # This is usually the result of calling `frame.insert` ...
+
                 self.output_data[f"{col}_pc"] = (
                     self.output_data[f"{col}_n"]
                     / self.output_data[f"{self.input_denominator_column}_total"]
                 ).round(4)
+
         keep = [self.weight_name_column]
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
@@ -303,25 +307,25 @@ class Weight:
 
     def export_output_data(self):
         path = self.output_dir + os.sep + self.output_file + '.csv'
-        self.output_data.to_csv(path, index=False)
+        self.output_data.to_csv(path, index=False, na_rep='Null')
 
     def export_output_data_unpivoted(self):
         path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
         self.output_data_unpivoted = self.output_data.melt(id_vars = 'district', var_name = 'census_variable', value_name = 'value')
-        self.output_data_unpivoted.to_csv(path, index=False)
+        self.output_data_unpivoted.to_csv(path, index=False, na_rep='Null')
 
     def export_output_data_pc(self):
         df = self.output_data
         out = df[df.columns[~df.columns.str.endswith('_n')]]
         path = self.output_dir + os.sep + f'{self.output_file}_pc' + '.csv'
-        out.to_csv(path, index=False)
+        out.to_csv(path, index=False, na_rep='Null')
 
     def export_output_data_n(self):
         df = self.output_data
 
         out = df[df.columns[~df.columns.str.endswith('_pc')]]
         path = self.output_dir + os.sep + f'{self.output_file}_n' + '.csv'
-        out.to_csv(path, index=False)
+        out.to_csv(path, index=False, na_rep='Null')
 
     def run(self):
         # load data
