@@ -13,7 +13,7 @@ for input_file in input_files:
 
         print(f'processing {input_file} \r\n')
         # get data
-        input_data = pd.read_csv(f'output{os.sep}{input_file}', na_values='Null')
+        input_data = pd.read_csv(f'output{os.sep}{input_file}', na_values=['Null','NaN','nan','Nan'])
 
         # order for ranking
         input_data.sort_values(by=['census_variable', 'value'], inplace=True)

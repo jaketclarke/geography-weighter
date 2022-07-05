@@ -8,12 +8,10 @@ from guts.weighter import ModeSelect, RunOptions, SelectInputFile, Weight
 input_mode = 'sa1-2021'
 output_mode = 'state electorates'
 input_join_column = 'SA1_CODE_2021'
-input_denominator_column = 'P_Tot_Tot'
+input_denominator_column = 'Total_Total'
 
 # get files to process
 input_files = get_files_in_directory(f'data{os.sep}')
-
-print(input_files)
 
 for input_file in input_files:
 
@@ -22,7 +20,7 @@ for input_file in input_files:
     output_file = input_file.replace('AUST_SA1.csv', 'VIC_SED_2022') # the output adds .csv on to the extension
     input_file = 'data' + os.sep + input_file
 
-    data = pd.read_csv(input_file)
+    data = pd.read_csv(input_file, na_values=['Null','NaN','nan','Nan'])
 
     # initialise a weight object with the geog type specified
     weight = Weight(

@@ -2,8 +2,7 @@
 
 import pandas as pd
 
-df = pd.read_excel('output/2021Census_G01_VIC_SED_2022.xlsx')
-# df = pd.read_csv('output/2021Census_G01_VIC_SED_2022.csv')
+df = pd.read_excel('output/2021Census_G01_VIC_SED_2022.xlsx', na_values=['Null','NaN','nan','Nan'])
 
 df = df.melt(id_vars = 'District', var_name = 'census_variable', value_name = 'value')
 

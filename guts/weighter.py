@@ -230,10 +230,10 @@ class Weight:
             f"There is not a properly formatted config file at {self.weight_config_file}"
 
     def get_input_data(self):
-        self.input_data = pd.read_csv(self.input_file)
+        self.input_data = pd.read_csv(self.input_file, na_values=['Null','NaN','nan','Nan'])
 
     def get_weight_data(self):
-        self.weight_data = pd.read_csv(self.weight_file)
+        self.weight_data = pd.read_csv(self.weight_file, na_values=['Null','NaN','nan','Nan'])
 
     def run_merge_data(self):
         self.process_data = pd.merge(
