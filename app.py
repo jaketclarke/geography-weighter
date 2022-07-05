@@ -26,7 +26,7 @@ def main():
     mode = ModeSelect()
     mode.prompt()
 
-    data = pd.read_csv(file.input_file)
+    data = pd.read_csv(file.input_file, na_values=['Null','NaN','nan','Nan'])
 
     # initialise a weight object with the geog type specified
     weight = Weight(
@@ -48,7 +48,6 @@ def main():
     # except:
     #     log(f"Unfortunately, something went wrong", color="red")
     #     log(f"{w}", color='green')
-
 
 if __name__ == "__main__":
     main()

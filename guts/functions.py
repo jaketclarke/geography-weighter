@@ -107,7 +107,6 @@ def empty_directory(folder: str) -> str:
         except OSError as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
-
 def get_files_in_directory(path_to_dir, suffix=".csv"):
     """
     Args:
