@@ -260,7 +260,7 @@ class Weight:
 
         # for each input column craete output
         for col in self.input_numerator_columns:
-            self.process_data[f"{col}_n"] = (
+            self.process_data[f"{col}"] = (
                 self.process_data[col] * self.process_data[self.weight_proportion_overlap_column]
             )
 
@@ -278,7 +278,7 @@ class Weight:
 
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
-                process_data_properties.append(f"{col}_n")
+                process_data_properties.append(f"{col}")
 
         process_data_properties.append(f"{self.input_denominator_column}_total")
         self.output_data = self.process_data[process_data_properties]       
@@ -293,14 +293,14 @@ class Weight:
                 # This is usually the result of calling `frame.insert` ...
 
                 self.output_data[f"{col}_pc"] = (
-                    self.output_data[f"{col}_n"]
+                    self.output_data[f"{col}"]
                     / self.output_data[f"{self.input_denominator_column}_total"]
                 ).round(4)
 
         keep = [self.weight_name_column]
         for col in self.input_numerator_columns:
             if col != self.input_join_column:
-                keep.append(f"{col}_n")
+                keep.append(f"{col}")
                 keep.append(f"{col}_pc")
         keep.append(f"{self.input_denominator_column}_total")
         self.output_data = self.output_data[keep]
@@ -316,7 +316,7 @@ class Weight:
 
     def export_output_data_pc(self):
         df = self.output_data
-        out = df[df.columns[~df.columns.str.endswith('_n')]]
+        out = df[df.columns[df.columns.str.endswith('_pc')]]
         path = self.output_dir + os.sep + f'{self.output_file}_pc' + '.csv'
         out.to_csv(path, index=False, na_rep='Null')
 
