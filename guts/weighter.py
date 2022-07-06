@@ -1,12 +1,15 @@
 # imports
 import json
 import os
-
 import pandas as pd
+import numpy as np
+from warnings import simplefilter
 from PyInquirer import prompt
 from .functions import make_directorytree_if_not_exists
 from .validators import EmptyValidator
 
+# disable a performance warning
+simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 class SelectInputFile:
     def __str__(self):
@@ -318,16 +321,60 @@ class Weight:
 
     def export_output_data_pc(self):
         df = self.output_data
-        out = df[df.columns[df.columns.str.endswith('_pc')]]
+        # keep the label and all columns ending in pc
+        keep_cols=[df.columns[0]]
+        for col in df.columns:
+            if '_pc' in col:
+                keep_cols.append(col)
+        out = df[df.columns[df.columns.isin(keep_cols)]]
         path = self.output_dir + os.sep + f'{self.output_file}_pc' + '.csv'
         out.to_csv(path, index=False, na_rep='Null')
 
     def export_output_data_n(self):
         df = self.output_data
-
         out = df[df.columns[~df.columns.str.endswith('_pc')]]
         path = self.output_dir + os.sep + f'{self.output_file}_n' + '.csv'
         out.to_csv(path, index=False, na_rep='Null')
+        
+        
+    def run_ranking(self):
+        # gets the name of the output data column from the first column of the input data, e.g, district, electorate, etc
+        geography_label = self.output_data.columns[0]
+        
+        # path to unpivoted data
+        path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
+
+        # get data
+        input_data = pd.read_csv(path, na_values=['Null','NaN','nan','Nan'])
+
+        # order for ranking
+        input_data.sort_values(by=['census_variable', 'value'], inplace=True)
+
+        # rank
+        tmp = input_data.groupby('census_variable').size()
+        rank = tmp.map(range)
+        rank =[item for sublist in rank for item in sublist]
+        input_data['rank'] = rank
+        input_data["rank"] = input_data["rank"] + 1
+
+        # if all the input data is NaN, don't rank
+        input_data.loc[input_data['value'].isnull(), 'rank'] = np.nan
+
+        output_file = path.replace('unpivoted','ranked_unpivoted')
+        input_data.to_csv(output_file, index=False, na_rep='Null')
+
+        # repivot
+        transform = pd.pivot_table(data=input_data, index=[geography_label,'census_variable'])
+        transform = transform.reset_index()
+        # transform = transform.drop('value',1)
+        transform.drop(columns='value', inplace=True)
+
+                
+        pivot = transform.pivot(index=geography_label, columns='census_variable',values='rank')
+        output_file = path.replace('unpivoted','ranked')
+        pivot.to_csv(output_file, na_rep='Null')
+
+        print(f'processed {output_file} \r\n')
 
     def run(self):
         # load data
@@ -344,3 +391,4 @@ class Weight:
 
         self.export_output_data_pc()
         self.export_output_data_n()
+        self.run_ranking()

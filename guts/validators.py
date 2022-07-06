@@ -1,5 +1,4 @@
 import os
-
 from PyInquirer import ValidationError, Validator
 
 
