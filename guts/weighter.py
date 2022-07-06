@@ -311,7 +311,9 @@ class Weight:
 
     def export_output_data_unpivoted(self):
         path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
-        self.output_data_unpivoted = self.output_data.melt(id_vars = 'district', var_name = 'census_variable', value_name = 'value')
+        # gets the name of the output data column from the first column of the input data, e.g, district, electorate, etc
+        label = self.output_data.columns[0]
+        self.output_data_unpivoted = self.output_data.melt(id_vars = label, var_name = 'census_variable', value_name = 'value')
         self.output_data_unpivoted.to_csv(path, index=False, na_rep='Null')
 
     def export_output_data_pc(self):
