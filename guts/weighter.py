@@ -366,9 +366,7 @@ class Weight:
         # repivot
         transform = pd.pivot_table(data=input_data, index=[geography_label,'census_variable'])
         transform = transform.reset_index()
-        # transform = transform.drop('value',1)
         transform.drop(columns='value', inplace=True)
-
                 
         pivot = transform.pivot(index=geography_label, columns='census_variable',values='rank')
         output_file = path.replace('unpivoted','ranked')
