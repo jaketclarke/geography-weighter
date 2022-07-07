@@ -4,13 +4,18 @@ A tool to weight input data by geography.
 
 This tool helps you solve the problem "I have this data by postcode, and I'd like to have it by federal electorate".
 
+| Example Input| Example Output |
+|--------------|-----------|
+| ![Output Example Image](readme/data-sa1.png) |  ![Output Example Image](readme/data-district.png)  |
+
+
 ## Development Environment
 
 - pyenv for python versioning
 - setup here <https://github.com/pyenv/pyenv>
 - pipenv for virtual environment
 - setup taken from this guide <https://hackernoon.com/reaching-python-development-nirvana-bb5692adf30c>, as well as https://dev.to/py3course/setting-up-a-python-environment-in-2020-3e9e
-- I am developing in WSL on a windows machine, and am making use of this vscode extension to remotely run python <https://code.visualstudio.com/docs/remote/wsl-tutorial>
+- I am developing in WSL on a windows machine, and I use this vscode extension to remotely run python <https://code.visualstudio.com/docs/remote/wsl-tutorial>
 
 ### Get started
 
@@ -25,11 +30,12 @@ This tool helps you solve the problem "I have this data by postcode, and I'd lik
 - `pipenv run pytest -v tests.py`
 
 ### Check test coverage
+
 - `pipenv run pytest --cov=guts --cov=. tests/ --cov-config=.coveragerc --cov-report=xml`
 - `pipenv run coverage report -m`
 
-
 ### Commit changes
+
 - in the root of the git repo
 - `pre-commit install`
 - then use git as normal
