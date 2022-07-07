@@ -8,11 +8,11 @@ if run:
 
     # unpivot
     df = df.melt(id_vars="district", var_name="census_variable", value_name="value")
-    df.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot.csv", index=False)
+    df.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot.csv", index=False, na_rep='Null')
 
     # sort
     out = df.sort_values(by=["census_variable", "value"])
-    out.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot_sorted.csv", index=False)
+    out.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot_sorted.csv", index=False, na_rep='Null')
 
     # remove n
     remove_rows = out[out["census_variable"].str.endswith("_n")].index
@@ -25,8 +25,8 @@ if run:
     out["rank"] = rank
     out["rank"] = out["rank"] + 1
 
-    out.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot_sorted_ranked.csv", index=False)
+    out.to_csv("output/2016Census_G03_VIC_SED_2022_unpivot_sorted_ranked.csv", index=False, na_rep='Null')
 
     # pivot
     test = out.pivot(index="census_variable", columns="district", values="value")
-    test.to_csv("output/2016Census_G03_VIC_SED_2022_pivot.csv")
+    test.to_csv("output/2016Census_G03_VIC_SED_2022_pivot.csv", na_rep='Null')
