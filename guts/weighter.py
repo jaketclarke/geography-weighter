@@ -11,6 +11,7 @@ from .validators import EmptyValidator
 # disable a performance warning
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
+
 class SelectInputFile:
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
@@ -197,6 +198,9 @@ class Weight:
         self.output_file = "file"
         self.output_filepath = None
 
+        # make output dir if not exists
+        self.create_output_directory_if_not_exists()
+
         # the loading of weight options should come from the file system
         # this should get broken into an input mode/set weights class
         # the weights class should just get the input data for readability
@@ -208,6 +212,18 @@ class Weight:
         self.debug = False
 
     # update several properties of the class with vals (eg from cmd line tool)
+    def create_output_directory_if_not_exists(self):
+        """Create a directory if it does not exist
+
+        Args:
+            directory (str): path to directory
+        """
+        try:
+            if not os.path.exists(self.output_dir):
+                os.makedirs(self.output_dir)
+                print(f"created {self.output_dir}")
+        except RuntimeError:
+            f"Could not create output directory {self.output_dir}"
 
     def update_properties(self, data):
         for name, value in data.items():
@@ -233,10 +249,10 @@ class Weight:
             f"There is not a properly formatted config file at {self.weight_config_file}"
 
     def get_input_data(self):
-        self.input_data = pd.read_csv(self.input_file, na_values=['Null','NaN','nan','Nan'])
+        self.input_data = pd.read_csv(self.input_file, na_values=["Null", "NaN", "nan", "Nan"])
 
     def get_weight_data(self):
-        self.weight_data = pd.read_csv(self.weight_file, na_values=['Null','NaN','nan','Nan'])
+        self.weight_data = pd.read_csv(self.weight_file, na_values=["Null", "NaN", "nan", "Nan"])
 
     def run_merge_data(self):
         self.process_data = pd.merge(
@@ -249,7 +265,7 @@ class Weight:
 
         if self.debug:
             make_directorytree_if_not_exists("debug")
-            self.process_data.to_csv("debug/merge_data.csv", index=False, na_rep='Null')
+            self.process_data.to_csv("debug/merge_data.csv", index=False, na_rep="Null")
 
     def add_total_column(self):
         self.process_data[f"{self.input_denominator_column}_total"] = (
@@ -258,11 +274,19 @@ class Weight:
         )
 
     def run_process_data(self):
+        # update types
+        # convert to floats
+        
+        self.process_data[self.weight_proportion_overlap_column] = pd.to_numeric(self.process_data[self.weight_proportion_overlap_column])
+        self.process_data[self.input_denominator_column] = pd.to_numeric(self.process_data[self.input_denominator_column])
+        
+
         # add total
         self.add_total_column()
 
-        # for each input column craete output
         for col in self.input_numerator_columns:
+            self.process_data[f"{col}"] = pd.to_numeric(self.process_data[f"{col}"])
+            
             self.process_data[f"{col}"] = (
                 self.process_data[col] * self.process_data[self.weight_proportion_overlap_column]
             )
@@ -273,7 +297,7 @@ class Weight:
 
         if self.debug:
             make_directorytree_if_not_exists("debug")
-            self.process_data.to_csv("debug/process_data.csv", index=False, na_rep='Null')
+            self.process_data.to_csv("debug/process_data.csv", index=False, na_rep="Null")
 
     def run_cull_data(self):
         # group by, add up, reset index to get a data frame, limit to sensible columns, export
@@ -284,10 +308,12 @@ class Weight:
                 process_data_properties.append(f"{col}")
 
         process_data_properties.append(f"{self.input_denominator_column}_total")
-        self.output_data = self.process_data[process_data_properties]       
+        self.output_data = self.process_data[process_data_properties]
         # if the entire column is NaN, min count below will ensure the output is NaN
         # this is put in because the 2021 census data has some data not released at the sa1 level
-        self.output_data = self.output_data.groupby([self.weight_name_column]).sum(min_count=1).round(0)
+        self.output_data = (
+            self.output_data.groupby([self.weight_name_column]).sum(min_count=1).round(0)
+        )
         self.output_data = self.output_data.reset_index()
 
         for col in self.input_numerator_columns:
@@ -309,70 +335,71 @@ class Weight:
         self.output_data = self.output_data[keep]
 
     def export_output_data(self):
-        path = self.output_dir + os.sep + self.output_file + '.csv'
-        self.output_data.to_csv(path, index=False, na_rep='Null')
+        path = self.output_dir + os.sep + self.output_file + ".csv"
+        self.output_data.to_csv(path, index=False, na_rep="Null")
 
     def export_output_data_unpivoted(self):
-        path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
+        path = self.output_dir + os.sep + f"{self.output_file}_unpivoted" + ".csv"
         # gets the name of the output data column from the first column of the input data, e.g, district, electorate, etc
         label = self.output_data.columns[0]
-        self.output_data_unpivoted = self.output_data.melt(id_vars = label, var_name = 'census_variable', value_name = 'value')
-        self.output_data_unpivoted.to_csv(path, index=False, na_rep='Null')
+        self.output_data_unpivoted = self.output_data.melt(
+            id_vars=label, var_name="census_variable", value_name="value"
+        )
+        self.output_data_unpivoted.to_csv(path, index=False, na_rep="Null")
 
     def export_output_data_pc(self):
         df = self.output_data
         # keep the label and all columns ending in pc
-        keep_cols=[df.columns[0]]
+        keep_cols = [df.columns[0]]
         for col in df.columns:
-            if '_pc' in col:
+            if "_pc" in col:
                 keep_cols.append(col)
         out = df[df.columns[df.columns.isin(keep_cols)]]
-        path = self.output_dir + os.sep + f'{self.output_file}_pc' + '.csv'
-        out.to_csv(path, index=False, na_rep='Null')
+        path = self.output_dir + os.sep + f"{self.output_file}_pc" + ".csv"
+        out.to_csv(path, index=False, na_rep="Null")
 
     def export_output_data_n(self):
         df = self.output_data
-        out = df[df.columns[~df.columns.str.endswith('_pc')]]
-        path = self.output_dir + os.sep + f'{self.output_file}_n' + '.csv'
-        out.to_csv(path, index=False, na_rep='Null')
-        
-        
+        out = df[df.columns[~df.columns.str.endswith("_pc")]]
+        path = self.output_dir + os.sep + f"{self.output_file}_n" + ".csv"
+        out.to_csv(path, index=False, na_rep="Null")
+
     def run_ranking(self):
         # gets the name of the output data column from the first column of the input data, e.g, district, electorate, etc
         geography_label = self.output_data.columns[0]
-        
+
         # path to unpivoted data
-        path = self.output_dir + os.sep + f'{self.output_file}_unpivoted' + '.csv'
+        path = self.output_dir + os.sep + f"{self.output_file}_unpivoted" + ".csv"
 
         # get data
-        input_data = pd.read_csv(path, na_values=['Null','NaN','nan','Nan'])
+        input_data = pd.read_csv(path, na_values=["Null", "NaN", "nan", "Nan"])
 
         # order for ranking
-        input_data.sort_values(by=['census_variable', 'value'], inplace=True)
+        input_data.sort_values(by=["census_variable", "value"], inplace=True)
 
         # rank
-        tmp = input_data.groupby('census_variable').size()
+        tmp = input_data.groupby("census_variable").size()
         rank = tmp.map(range)
-        rank =[item for sublist in rank for item in sublist]
-        input_data['rank'] = rank
+        rank = [item for sublist in rank for item in sublist]
+        input_data["rank"] = rank
         input_data["rank"] = input_data["rank"] + 1
 
         # if all the input data is NaN, don't rank
-        input_data.loc[input_data['value'].isnull(), 'rank'] = np.nan
+        input_data.loc[input_data["value"].isnull(), "rank"] = np.nan
 
-        output_file = path.replace('unpivoted','ranked_unpivoted')
-        input_data.to_csv(output_file, index=False, na_rep='Null')
+        output_file = path.replace("unpivoted", "ranked_unpivoted")
+        input_data.to_csv(output_file, index=False, na_rep="Null")
 
         # repivot
-        transform = pd.pivot_table(data=input_data, index=[geography_label,'census_variable'])
+        transform = pd.pivot_table(data=input_data, index=[geography_label, "census_variable"])
         transform = transform.reset_index()
-        transform.drop(columns='value', inplace=True)
-                
-        pivot = transform.pivot(index=geography_label, columns='census_variable',values='rank')
-        output_file = path.replace('unpivoted','ranked')
-        pivot.to_csv(output_file, na_rep='Null')
+        transform.drop(columns="value", inplace=True)
 
-        print(f'processed {output_file} \r\n')
+        pivot = transform.pivot(index=geography_label, columns="census_variable", values="rank")
+        output_file = path.replace("unpivoted", "ranked")
+        pivot.to_csv(output_file, na_rep="Null")
+
+        print(f"processed {output_file} \r\n")
 
     def run(self):
         # load data

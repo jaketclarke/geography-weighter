@@ -141,3 +141,4 @@ input
 debug
 cov.xml
 data
+__azurite_db_table__.json
