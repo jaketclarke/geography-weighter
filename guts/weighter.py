@@ -1,5 +1,6 @@
 # imports
 import json
+import logging
 import os
 import pandas as pd
 import numpy as np
@@ -393,7 +394,10 @@ class Weight:
         # repivot
         transform = pd.pivot_table(data=input_data, index=[geography_label, "census_variable"])
         transform = transform.reset_index()
-        transform.drop(columns="value", inplace=True)
+        try:
+            transform.drop(columns="value", inplace=True)
+        except:
+            logging.info("couldn't drop columns in transformation")
 
         pivot = transform.pivot(index=geography_label, columns="census_variable", values="rank")
         output_file = path.replace("unpivoted", "ranked")

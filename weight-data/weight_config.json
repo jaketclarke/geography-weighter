@@ -21,5 +21,11 @@
         "weight_join_column": "SA1_CODE_2021",
         "weight_name_column": "district",
         "weight_proportion_overlap_column": "proportion_in_district"
+    },"sa1-2021_federal electorates": {
+        "weight_file": "weight-data/sa1_2011_ced_2024_proposed_concordance_nsw_nonflat.csv",
+        "weight_join_column": "SA1_CODE21",
+        "weight_name_column": "Electorate",
+        "weight_proportion_overlap_column": "proportion"
     }
+
 }
